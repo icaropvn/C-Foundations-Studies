@@ -19,12 +19,11 @@ linhas do chamado Triângulo de Pascal:
 #include <stdlib.h>
 #include <locale.h>
 
-int i, j ;
-int n ;
-int pascal[5][5] ;
-
-main()
+int main()
 {
+	int i, j ;
+	int n ;
+	
 	setlocale(LC_ALL, "Portuguese");
 	
 	printf("Insira o número de linhas desejadas do Triâgulo de Pascal: ");
