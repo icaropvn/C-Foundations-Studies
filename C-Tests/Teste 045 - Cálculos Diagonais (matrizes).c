@@ -33,16 +33,16 @@ main()
 	{
 		for(j=0; j<3; j++)
 		{
-			if(i + j >= 3)
+			if(i > j)
 				soma[2] += a[i][j] ;
-			else if(i + j == 2)
+			else if(i == j)
 				soma[1] += a[i][j] ;
 			else
 				soma[0] += a[i][j] ;
 		}
 	}
 	
-	printf("Matriz A:\n");
+	printf("Matriz:\n");
 	
 	for(i=0; i<3; i++)
 	{
@@ -53,9 +53,9 @@ main()
 		printf("\n");
 	}
 	
-	printf("\nSomas:\nAcima da Diagonal (%i, %i e %i): %i\n", a[0][0], a[0][1], a[1][0], soma[0]);
-	printf("Elementos da Diagonal (%i, %i e %i): %i\n", a[2][0], a[1][1], a[0][2], soma[1]);
-	printf("Abaixo da Diagonal (%i, %i e %i): %i\n\n", a[1][2], a[2][2], a[2][1], soma[2]);
+	printf("\nSomas:\nAcima da Diagonal: %i\n", soma[0]);
+	printf("Elementos da Diagonal: %i\n", soma[1]);
+	printf("Abaixo da Diagonal: %i\n\n", soma[2]);
 	
 	system("pause");
 }
