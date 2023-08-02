@@ -51,13 +51,13 @@ int main()
         }
         else if(answer == 2)
         {
-            printf("----------------------------------------------------------------\n");
+            printf("---------------------------------------------------------------------------------\n");
             printf(" Codigo  |      Nome      |  Parcial  |  Exame  |  Media  |  Faltas  |  Status  |\n");
             
             for(i=0; i<student_counter; i++)
-                printf(" %6.i  | %s              |    %.1f    |   %.1f   |   %.1f   |     %i    |   %s    |\n", aluno[i].codigo, aluno[student_counter].nome, aluno[i].parcial, aluno[i].exame, aluno[i].media, aluno[i].faltas, aluno[i].status);
+                printf(" %6.i  | %s              |  %7.1f  |  %5.1f  |  %5.1f  |  %6.i  |     %s  |\n", aluno[i].codigo, aluno[student_counter].nome, aluno[i].parcial, aluno[i].exame, aluno[i].media, aluno[i].faltas, aluno[i].status);
                 if(i == student_counter)
-                    printf("----------------------------------------------------------------\n");
+                    printf("---------------------------------------------------------------------------------\n");
             
         }
         else
