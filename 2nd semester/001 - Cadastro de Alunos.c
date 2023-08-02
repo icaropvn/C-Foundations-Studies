@@ -37,9 +37,9 @@ int main()
                 aluno[student_counter].media = 0.4 * aluno[student_counter].parcial + 0.6 * aluno[student_counter].exame ;
                 
                 if(aluno[student_counter].media >= 6.0)
-                    aluno[student_counter].status[0] = 'a';
+                    strcpy(aluno[student_counter].status, "APR");
                 else
-                    aluno[student_counter].status[0] = 'r';
+                    strcpy(aluno[student_counter].status, "REP");
                     
                 printf("Faltas do aluno: ");
                 scanf("%i", &aluno[student_counter].faltas);
@@ -55,7 +55,7 @@ int main()
             printf(" Codigo  |      Nome      |  Parcial  |  Exame  |  Media  |  Faltas  |  Status  |\n");
             
             for(i=0; i<student_counter; i++)
-                printf(" %6.i  | %s             |    %.1f    |   %.1f   |   %.1f   |     %i    |          |\n", aluno[i].codigo, aluno[student_counter].nome, aluno[i].parcial, aluno[i].exame, aluno[i].media, aluno[i].faltas);
+                printf(" %6.i  | %s              |    %.1f    |   %.1f   |   %.1f   |     %i    |   %s    |\n", aluno[i].codigo, aluno[student_counter].nome, aluno[i].parcial, aluno[i].exame, aluno[i].media, aluno[i].faltas, aluno[i].status);
                 if(i == student_counter)
                     printf("----------------------------------------------------------------\n");
             
