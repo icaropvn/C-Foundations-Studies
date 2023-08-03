@@ -28,9 +28,9 @@ int main()
                 printf("Codigo (RA): ");
                 scanf("%i", &aluno[student_counter].codigo);
                 
-                // printf("Nome: ");
-                // fgets(aluno[student_counter].nome, 50, stdin);
-                
+                printf("Nome: ");
+                scanf(" %[^\n]s", aluno[student_counter].nome);
+
                 printf("Nota da prova parcial: ");
                 scanf("%f", &aluno[student_counter].parcial);
                     
