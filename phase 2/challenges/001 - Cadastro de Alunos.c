@@ -3,6 +3,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <locale.h>
 
 typedef struct
 {
@@ -13,6 +14,8 @@ typedef struct
 
 int main()
 {
+    setlocale(LC_ALL, "Portuguese");
+    
     int i, answer = 1, student_counter = 0;
     dados_alunos aluno[30];
     
@@ -26,7 +29,7 @@ int main()
                 scanf("%i", &aluno[student_counter].codigo);
                 
                 // printf("Nome: ");
-                // scanf("%s", &aluno[student_counter].nome);
+                // fgets(aluno[student_counter].nome, 50, stdin);
                 
                 printf("Nota da prova parcial: ");
                 scanf("%f", &aluno[student_counter].parcial);
