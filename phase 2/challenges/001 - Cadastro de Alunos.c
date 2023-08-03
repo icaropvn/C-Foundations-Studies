@@ -16,7 +16,7 @@ int main()
 {
     setlocale(LC_ALL, "Portuguese");
     
-    int i, c, answer = 1, student_counter = 0, spaces;
+    int i, answer = 1, student_counter = 0;
     dados_alunos aluno[30];
     
     do
@@ -30,8 +30,6 @@ int main()
                 
                 printf("Nome: ");
                 scanf(" %50[^\n]s", aluno[student_counter].nome);
-                
-                spaces = 50 - strlen(aluno[student_counter].nome) + 1 ;
                 
                 printf("Nota da prova parcial: ");
                 scanf("%f", &aluno[student_counter].parcial);
