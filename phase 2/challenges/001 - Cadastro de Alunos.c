@@ -16,7 +16,7 @@ int main()
 {
     setlocale(LC_ALL, "Portuguese");
     
-    int i, answer = 1, student_counter = 0;
+    int i, c, answer = 1, student_counter = 0, spaces;
     dados_alunos aluno[30];
     
     do
@@ -29,8 +29,10 @@ int main()
                 scanf("%i", &aluno[student_counter].codigo);
                 
                 printf("Nome: ");
-                scanf(" %[^\n]s", aluno[student_counter].nome);
-
+                scanf(" %50[^\n]s", aluno[student_counter].nome);
+                
+                spaces = 50 - strlen(aluno[student_counter].nome) + 1 ;
+                
                 printf("Nota da prova parcial: ");
                 scanf("%f", &aluno[student_counter].parcial);
                     
@@ -54,14 +56,14 @@ int main()
         }
         else if(answer == 2)
         {
-            printf("---------------------------------------------------------------------------------\n");
-            printf(" Codigo  |      Nome      |  Parcial  |  Exame  |  Media  |  Faltas  |  Status  |\n");
+            printf("-------------------------------------------------------------------------------------------------------------------\n");
+            printf(" Codigo  |                       Nome                       |  Parcial  |  Exame  |  Media  |  Faltas  |  Status  |\n");
             
             for(i=0; i<student_counter; i++)
             {
-                printf(" %6.i  | %s              |  %7.1f  |  %5.1f  |  %5.1f  |  %6.i  |     %s  |\n", aluno[i].codigo, aluno[i].nome, aluno[i].parcial, aluno[i].exame, aluno[i].media, aluno[i].faltas, aluno[i].status);
+                printf(" %6.i  | %48s |  %7.1f  |  %5.1f  |  %5.1f  |  %6.i  |     %s  |\n", aluno[i].codigo, aluno[i].nome, aluno[i].parcial, aluno[i].exame, aluno[i].media, aluno[i].faltas, aluno[i].status);
                 if(i == student_counter - 1)
-                    printf("---------------------------------------------------------------------------------\n");
+                    printf("-------------------------------------------------------------------------------------------------------------------\n");
             }
             
         }
