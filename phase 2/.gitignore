@@ -1,3 +1,5 @@
 challenges/.vscode
 challenges/output
 challenges/*.exe
+
+tests/*.exe
