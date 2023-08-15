@@ -1,4 +1,28 @@
-// 001 - Cadastro de Alunos
+/* 001 - Cadastro de Alunos
+
+=== Aula 01 - Exercício 01 ===
+
+Escreva um programa que cadastre até 30 alunos.
+Para cada aluno registre RA, Nome, Parcial, Exame e faltas.
+
+O programa deve ter um menu com as opções:
+Total de Alunos: ??
+1) Adicionar
+2) Listar
+3) Sair
+
+No qual:
+
+* ?? é o número de alunos cadastrados;
+
+* Quando selecionada a opção listar, os seguintes dados devem ser exibidos em forma de tabela
+  CODIGO  NOME  PARCIAL  EXAME  MEDIA FALTAS  STATUS
+  
+* A exibição das notas e médias devem ser feitas com 1 casa decimal
+
+* O Status deve exibir APR ou REP de acordo com a regra da instituição, assim como a MÉDIA.
+
+*/
 
 #include <stdio.h>
 #include <stdlib.h>
