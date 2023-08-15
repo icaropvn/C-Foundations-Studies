@@ -68,7 +68,7 @@ int main()
             
         }
         else
-            printf("Resposta invalida\n");
+            printf("Resposta inválida.\n");
         
         printf("\nTotal de alunos: %i\n1) Adicionar\n2) Listar\n3) Sair\nR: ", student_counter);
         scanf("%i", &answer);
