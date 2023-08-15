@@ -57,7 +57,7 @@ int main()
         else if(answer == 2)
         {
             printf("-------------------------------------------------------------------------------------------------------------------\n");
-            printf(" Codigo  |                       Nome                       |  Parcial  |  Exame  |  Media  |  Faltas  |  Status  |\n");
+            printf(" Código  |                       Nome                       |  Parcial  |  Exame  |  Média  |  Faltas  |  Status  |\n");
             
             for(i=0; i<student_counter; i++)
             {
