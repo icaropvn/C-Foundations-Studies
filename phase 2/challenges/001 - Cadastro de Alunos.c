@@ -4,6 +4,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <locale.h>
+#define MAX 3
 
 typedef struct
 {
@@ -17,19 +18,20 @@ int main()
     setlocale(LC_ALL, "Portuguese");
     
     int i, answer = 1, student_counter = 0;
-    dados_alunos aluno[30];
+    dados_alunos aluno[MAX];
     
     do
     {
         if(answer == 1)
         {
-            if(student_counter < 30)
+            if(student_counter < MAX)
             {
                 printf("Codigo (RA): ");
                 scanf("%i", &aluno[student_counter].codigo);
                 
                 printf("Nome: ");
                 scanf(" %50[^\n]s", aluno[student_counter].nome);
+                fflush(stdin);
                 
                 printf("Nota da prova parcial: ");
                 scanf("%f", &aluno[student_counter].parcial);
@@ -50,7 +52,7 @@ int main()
                 student_counter++ ;
             }
             else
-                printf("QUANTIDADE MAXIMA DE ALUNOS CADASTRADOS\n");
+                printf("QUANTIDADE MÁXIMA DE ALUNOS CADASTRADOS\n");
         }
         else if(answer == 2)
         {
@@ -75,7 +77,7 @@ int main()
         
     } while(answer != 3);
     
-    printf("Ate a proxima!\n");
+    printf("Até a próxima!\n");
     
     return 0;
 }
