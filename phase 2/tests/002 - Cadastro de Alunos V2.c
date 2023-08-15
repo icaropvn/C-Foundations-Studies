@@ -15,13 +15,13 @@ struct dados_alunos
 
 typedef struct dados_alunos dados_alunos ;
 
-void menu(dados_alunos aluno[MAX], int cont_alunos)
+void menu(int cont_alunos)
 {
 	printf("Total de Alunos: %i\n", cont_alunos);
 	printf("1) Adicionar\n2) Listar\n3) Sair\nR: ");
 }
 
-void adicionar(dados_alunos aluno[MAX], int cont_alunos)
+void adicionar(dados_alunos aluno[], int cont_alunos)
 {	
 	if(cont_alunos < MAX)
 	{
@@ -48,7 +48,7 @@ void adicionar(dados_alunos aluno[MAX], int cont_alunos)
 		printf("\nMÁXIMO DE ALUNOS REGISTRADOS\n\n");
 }
 
-void calcular(dados_alunos aluno[MAX], int cont_alunos)
+void calcular(dados_alunos aluno[], int cont_alunos)
 {
 	aluno[cont_alunos].media = aluno[cont_alunos].notas[0]*0.4 + aluno[cont_alunos].notas[1]*0.6 ;
 		
@@ -58,13 +58,19 @@ void calcular(dados_alunos aluno[MAX], int cont_alunos)
 		strcpy(aluno[cont_alunos].status, "REP");
 }
 
-void listar(dados_alunos aluno[MAX], int cont_alunos)
+void listar(dados_alunos aluno[], int cont_alunos)
 {
 	int i ;
-	printf("\nCódigo\t\tNome\t\t\tParcial\t\tExame\tMédia\tFaltas\tStatus");
 	
-	for(i=0; i<cont_alunos; i++)	
-		printf("\n%i\t\t%s\t\t\t%.1f\t\t%.1f\t%.1f\t%i\t%s", aluno[i].codigo, aluno[i].nome, aluno[i].notas[0], aluno[i].notas[1], aluno[i].media, aluno[i].faltas, aluno[i].status);
+	if(cont_alunos > 0)
+	{
+		printf("\nCódigo\t\tNome\t\t\tParcial\t\tExame\tMédia\tFaltas\tStatus");
+	
+		for(i=0; i<cont_alunos; i++)	
+			printf("\n%i\t\t%s\t\t\t%.1f\t\t%.1f\t%.1f\t%i\t%s", aluno[i].codigo, aluno[i].nome, aluno[i].notas[0], aluno[i].notas[1], aluno[i].media, aluno[i].faltas, aluno[i].status);
+	}
+	else
+		printf("\nNenhum cadastro efetuado ainda. Lista vazia.");
 	
 	printf("\n\n");
 }
@@ -72,13 +78,13 @@ void listar(dados_alunos aluno[MAX], int cont_alunos)
 int main()
 {
 	int cont_alunos = 0, user_answer ;
-	struct dados_alunos aluno[MAX] ;
+	dados_alunos aluno[MAX] ;
 	
 	setlocale(LC_ALL, "Portuguese");
 	
 	do
 	{
-		menu(aluno, cont_alunos);
+		menu(cont_alunos);
 		scanf("%i", &user_answer);
 		
 		switch(user_answer)
