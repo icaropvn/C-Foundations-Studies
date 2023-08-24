@@ -25,9 +25,9 @@ int main()
 	}
 	
 	if(verificar(notas) == 1)
-		printf("\nAluno APROVADO\n\n");
+		printf("\nAluno APROVADO\n");
 	else
-		printf("\nAluno REPROVADO\n\n");
+		printf("\nAluno REPROVADO\n");
 	
 	return 0;
 }
