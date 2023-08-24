@@ -34,5 +34,5 @@ int main()
 
 float descontar(float price, int descount)
 {
-    return price - (price * descount / 100) ;
+    return price * (1 - descount / 100.0) ;
 }
