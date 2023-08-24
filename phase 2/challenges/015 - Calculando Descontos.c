@@ -17,23 +17,36 @@ float calcular_desconto(float preco);
 
 int main()
 {
-	float preco ;
+	float preco, preco_final ;
 	
 	setlocale(LC_ALL, "Portuguese");
 	
 	printf("Insira o preço do produto: R$");
 	scanf("%f", &preco);
 	
-	calcular_desconto(preco);
+	preco_final = calcular_desconto(preco);
+	
+	printf("\nValor a pagar: R$%.2f\n", preco_final);
+	
+	return 0;
 }
 
 float calcular_desconto(float preco)
 {
-	float preco_final ;
 	
 	if(preco <= 1000.00)
 	{
-		printf("Você recebeu 5% de desconto!");
-		preco_final = preco * 0.95;
+		printf("\nVocê recebeu 5%% de desconto!");
+		return preco * 0.95;
+	}
+	else if(preco <= 2000.00)
+	{
+		printf("\nVocê recebeu 10%% de desconto!");
+		return preco * 0.90;
+	}
+	else
+	{
+		printf("\nVocê recebeu 15%% de desconto!");
+		return preco * 0.85;
 	}
 }
