@@ -8,37 +8,48 @@ de um escalar qualquer em um vetor de inteiros.
 #include <stdio.h>
 #include <stdlib.h>
 #include <locale.h>
+#include <time.h>
 #define TAM 10
 
-void preencher_vetor(int vetor[]);
+void preencher_vetor_random(int vetor[], int vet_original[]);
 void multiplicar_vetor(int vetor[], int escalar);
 void imprimir_vetor(int vetor[]);
 
 int main()
 {
-	int vetor[TAM] ;
+	int vetor[TAM], vet_original[TAM] ;
 	int escalar ;
 	
-	preencher_vetor(vetor);
+	setlocale(LC_ALL, "Portuguese");
+	srand((unsigned)time(NULL));
+	
+	preencher_vetor_random(vetor, vet_original);
 	
 	printf("Insira um número para multiplicar o vetor por: ");
 	scanf("%i", &escalar);
 	
 	multiplicar_vetor(vetor, escalar);
 	
-	printf("\nVetor = [");
+	printf("\nVetor Original = [");
+	imprimir_vetor(vet_original);
 	
+	printf("\nVetor Multiplicado = [");
 	imprimir_vetor(vetor);
+	
+	printf("\n");
 	
 	return 0;
 }
 
-void preencher_vetor(int vetor[])
+void preencher_vetor_random(int vetor[], int vet_original[])
 {
 	int i;
 	
 	for(i=0; i<TAM; i++)
-		vetor[i] = i+1 ;
+	{
+		vetor[i] = 1 + (rand() % 10) ;
+		vet_original[i] = vetor[i] ;
+	}
 }
 
 void multiplicar_vetor(int vetor[], int escalar)
@@ -58,6 +69,6 @@ void imprimir_vetor(int vetor[])
 		if(i == TAM-1)
 			printf("%i]", vetor[i]);
 		else
-			printf("%i ", vetor[i]);
+			printf("%i, ", vetor[i]);
 	}
 }
