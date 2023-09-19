@@ -1,7 +1,5 @@
 // Header: Funções Matemáticas
 
-#include <math.h>
-
 #ifndef FUNCOESMAT_H
 #define FUNCOESMAT_H
 
@@ -29,8 +27,20 @@ float dividir(float num1, float num2)
 }
 
 float exponenciar(float num1, float num2)
-{
-	return pow(num1, num2);
+{	
+	int i, temp = 1;
+	
+	if(num2 == 0)
+		return 1;
+	else
+	{
+		for(i=1; i<=num2; i++)
+		{
+			temp = temp * num1 ;
+		}
+		
+		return temp ;
+	}
 }
 
 #endif
