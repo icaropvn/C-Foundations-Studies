@@ -1,4 +1,4 @@
-// ExercÃ­cio 05
+// Lista - Exercício 05
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -18,6 +18,8 @@ int main()
 	srand(time(NULL));
 	
 	preencher(a, b);
+	
+	printf("Vetores Sorteados:\n\n");
 	
 	printf("Vetor A = [");
 	imprimir(a);
@@ -58,9 +60,9 @@ void imprimir(int vetor[])
 	for(i=0; i<TAM; i++)
 	{
 		if(i == TAM-1)
-			printf("%i]", vetor[i]);
+			printf("%2.1i]", vetor[i]);
 		else
-			printf("%i, ", vetor[i]);
+			printf("%2.1i, ", vetor[i]);
 	}
 }
 
