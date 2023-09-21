@@ -1,4 +1,4 @@
-// Exerc√≠cio 04
+// Lista - ExercÌcio 04
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -7,33 +7,29 @@
 #define TAM 5
 
 void preencher(int a[], int b[]);
-void mesclar(int a[], int b[], int c[]);
+void somar(int a[], int b[], int c[]);
 void imprimir(int vetor[], int tamanho);
 
 int main()
 {
 	int a[TAM], b[TAM], c[TAM] ;
-	int tamanho_vetor ;
 	
 	setlocale(LC_ALL, "Portuguese");
-	srand((unsigned)time(NULL));
+	srand(time(NULL));
 	
 	printf("Vetores totalmente sorteados:\n\n");
 	
 	preencher(a, b);
-	mesclar(a, b, c);
+	somar(a, b, c);
 	
 	printf("Vetor A (pares) = [");
-	tamanho_vetor = sizeof(a) / sizeof(a[0]);
-	imprimir(a, tamanho_vetor);
+	imprimir(a, TAM);
 	
-	printf("\nVetor B (√≠mpares) = [");
-	tamanho_vetor = sizeof(b) / sizeof(b[0]);
-	imprimir(b, tamanho_vetor);
+	printf("\nVetor B (Ìmpares) = [");
+	imprimir(b, TAM);
 	
 	printf("\n\nVetor C (A + B) = [");
-	tamanho_vetor = sizeof(c) / sizeof(c[0]);
-	imprimir(c, tamanho_vetor);
+	imprimir(c, TAM);
 	
 	printf("\n");
 	
@@ -57,7 +53,7 @@ void preencher(int a[], int b[])
 		}
 	}
 	
-	// preenchendo vetor B apenas com √çMPARES
+	// preenchendo vetor B apenas com ÕMPARES
 	for(i=0; i<TAM; i++)
 	{
 		while(1)
@@ -71,7 +67,7 @@ void preencher(int a[], int b[])
 	}
 }
 
-void mesclar(int a[], int b[], int c[])
+void somar(int a[], int b[], int c[])
 {
 	int i ;
 	
@@ -91,5 +87,3 @@ void imprimir(int vetor[], int tamanho)
 			printf("%i, ", vetor[i]);
 	}
 }
-    
-    
