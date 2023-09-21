@@ -1,4 +1,4 @@
-// ExercÃ­cio 03
+// Lista - Exercício 03
 
 #include <stdio.h>
 #include <locale.h>
@@ -11,7 +11,7 @@ int main()
     
     setlocale(LC_ALL, "Portuguese");
     
-    printf("Insira um nÃºmero para encontrar os primos atÃ© ele: ");
+    printf("Insira um número para encontrar os primos até ele: ");
     scanf("%i", &num);
     
     printf("\n");
@@ -25,17 +25,22 @@ void primos(int num)
 {
     int i, j, divisores ;
     
-    for(i=1; i<=num; i++)
+    for(i=2; i<=num; i++)
     {
         divisores = 0 ;
         
-        for(j=2; j<i; j++)
+        for(j=2; j<=9; j++)
         {
-            if(i % j == 0)
-                divisores++ ;
+            if(j != i)
+            {
+				if(i % j == 0)
+                	divisores++ ;
+            }
         }
         
         if(divisores == 0)
-            printf("%i, ", i);
+			printf("%i ", i);
     }
+    
+	printf("\n");
 }
