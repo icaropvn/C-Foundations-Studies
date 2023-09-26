@@ -1,4 +1,4 @@
-// Lista - Exercício 12
+// Lista - Exercício 13
 
 #include <stdio.h>
 #include <stdlib.h>
