@@ -1,29 +1,29 @@
-// Lista - Exercício 13
+// Lista - Exercício 15
 
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
 #include <locale.h>
-#define TAM 3
+#define TAM 5
 
 void menu();
 void preencher_manual(int matriz[TAM][TAM]);
 void preencher_auto(int matriz[TAM][TAM]);
 void imprimir(int matriz[TAM][TAM]);
-int encontrar_menor(int matriz[TAM][TAM]);
+int quantidade_impares(int matriz[TAM][TAM]);
 
 int main()
 {
 	int matriz[TAM][TAM];
-	int menor;
+	int impares;
 	
 	setlocale(LC_ALL, "Portuguese");
 	srand(time(NULL));
 	
 	menu(matriz);
 	
-	menor = encontrar_menor(matriz);
-	printf("\nMenor Elemento = %i\n", menor);
+	impares = quantidade_impares(matriz);
+	printf("\nQuantidade de Ímpares = %i\n", impares);
 	
 	return 0;
 }
@@ -110,24 +110,19 @@ void imprimir(int matriz[TAM][TAM])
 	}
 }
 
-int encontrar_menor(int matriz[TAM][TAM])
+int quantidade_impares(int matriz[TAM][TAM])
 {
 	int i, j;
-	int menor;
+	int impares = 0;
 	
 	for(i=0; i<TAM; i++)
 	{
 		for(j=0; j<TAM; j++)
 		{
-			if(i == 0 && j == 0)
-				menor = matriz[i][j];
-			else
-			{
-				if(matriz[i][j] < menor)
-					menor = matriz[i][j];
-			}
+			if(matriz[i][j] % 2 == 1)
+				impares++ ;
 		}
 	}
 	
-	return menor;
+	return impares;
 }

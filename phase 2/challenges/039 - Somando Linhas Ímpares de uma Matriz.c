@@ -34,7 +34,7 @@ void menu(int matriz[TAM][TAM])
 	
 	while(1)
 	{
-		printf("Como deseja preecnher a matriz?\n[1] - Manualmente\n[2] - Aleatoriamente\nR: ");
+		printf("Como deseja preencher a matriz?\n[1] - Manualmente\n[2] - Aleatoriamente\nR: ");
 		scanf("%i", &answer);
 		
 		switch(answer)
