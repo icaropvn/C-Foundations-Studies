@@ -1,4 +1,4 @@
-// √çcaro Costa Pavan - Cadastro de Alunos II
+// 025 - Cadastro de Alunos II
 
 #include <stdio.h>
 #include <string.h>
@@ -41,18 +41,18 @@ void menu(dadosAlunos alunos[], int cont)
     while(1)
     {
         printf("TOTAL DE ALUNOS: %i\n", cont);
-        printf("[1] - Cadastrar\n[2] - Mostrar\n[3] - Pesquisar\n[4] - Alterar\n[5] - Relat√≥rio\n[6] - Sair\nR: ");
+        printf("[1] - Cadastrar\n[2] - Mostrar\n[3] - Pesquisar\n[4] - Alterar\n[5] - RelatÛrio\n[6] - Sair\nR: ");
         scanf("%i", &resposta_usuario);
     
         switch(resposta_usuario)
         {
             case 1:
                 if(cont == MAX)
-                    printf("\nM√°ximo de alunos cadastrados.\n\n");
+                    printf("\nM·ximo de alunos cadastrados.\n\n");
                 else
                 {
                     printf("------------------------");
-                    printf("\nC√≥digo: ");
+                    printf("\nCÛdigo: ");
                     scanf("%i", &codigo_cadastro);
                     
                     if(cont > 0)
@@ -61,7 +61,7 @@ void menu(dadosAlunos alunos[], int cont)
                         {
                             if(alunos[i].codigo == codigo_cadastro)
                             {
-                                printf("C√≥digo j√° est√° cadastrado.");
+                                printf("CÛdigo j· est· cadastrado.");
                                 break;
                             }
                             
@@ -81,17 +81,25 @@ void menu(dadosAlunos alunos[], int cont)
                 break;
             case 2:
                 if(cont == 0)
-                    printf("\nNenhum aluno cadastrado.\n\n");
+                {
+                	printf("---------------------------\n");
+                    printf("Nenhum aluno cadastrado.\n");
+                    printf("---------------------------\n");
+                }
                 else
                     mostrar(alunos, cont);
                 break;
             case 3:
                 if(cont == 0)
-                    printf("\nCadastre um aluno antes de pesquisar.\n\n");
+                {
+                	printf("---------------------------------------\n");
+                    printf("Cadastre um aluno antes de pesquisar.\n");
+                    printf("---------------------------------------\n");
+                }
                 else
                 {
                     printf("------------------------");
-                    printf("\nInsira o c√≥digo do aluno: ");
+                    printf("\nInsira o cÛdigo do aluno: ");
                     scanf("%i", &codigo_pesquisa);
                     
                     if(pesquisar(alunos, codigo_pesquisa, cont) != -1)
@@ -99,14 +107,14 @@ void menu(dadosAlunos alunos[], int cont)
                         i = pesquisar(alunos, codigo_pesquisa, cont);
                         
                         printf("\n-----------------------------------------------------------------------------------------------------------------\n");
-                        printf("  Aluno  \t|\tNota Parcial\t|\tNota Final\t|\tM√©dia\t|\tFaltas\t|\tStatus\t|\n");
+                        printf("  Aluno  \t|\tNota Parcial\t|\tNota Final\t|\tMÈdia\t|\tFaltas\t|\tStatus\t|\n");
                         printf("  %i  \t|\t%.2f\t\t|\t%.2f\t\t|\t%.2f\t|\t%i\t|\t%s\t|", alunos[i].codigo, alunos[i].notas[0], alunos[i].notas[1], alunos[i].media, alunos[i].faltas, alunos[i].status);
                         printf("\n-----------------------------------------------------------------------------------------------------------------\n");
                     }
                     else
                     {
                         printf("------------------------\n");
-                        printf("Aluno n√£o encontrado.\n\n");
+                        printf("Aluno n„o encontrado.\n\n");
                     }
                 }
                 break;
@@ -116,7 +124,7 @@ void menu(dadosAlunos alunos[], int cont)
                 else
                 {
                     printf("----------------------------------\n");
-                    printf("Cadastre alunos para mudar dados.");
+                    printf("Cadastre alunos para mudar dados.\n");
                     printf("----------------------------------\n");
                 }
                 break;
@@ -126,15 +134,15 @@ void menu(dadosAlunos alunos[], int cont)
                 else
                 {
                     printf("-------------------------------------------\n");
-                    printf("Cadastre alunos para gerar um relat√≥rio.\n");
+                    printf("Cadastre alunos para gerar um relatÛrio.\n");
                     printf("-------------------------------------------\n");
                 }
                 break;
             case 6:
-                printf("\nAt√© mais!");
+                printf("\nAtÈ mais!\n");
                 break;
             default:
-                printf("\nInsira uma resposta v√°lida.\n\n");
+                printf("\nInsira uma resposta v·lida.\n\n");
                 break;
         }
         
@@ -169,7 +177,7 @@ void mostrar(dadosAlunos alunos[], int cont)
     int i;
     
     printf("\n-----------------------------------------------------------------------------------------------------------------\n");
-    printf("  Aluno  \t|\tNota Parcial\t|\tNota Final\t|\tM√©dia\t|\tFaltas\t|\tStatus\t|\n");
+    printf("  Aluno  \t|\tNota Parcial\t|\tNota Final\t|\tMÈdia\t|\tFaltas\t|\tStatus\t|\n");
     
     for(i=0; i<cont; i++)
     {
@@ -199,7 +207,7 @@ void alterar(dadosAlunos alunos[], int cont)
     
     printf("------------------------");
     
-    printf("\nInsira o c√≥digo do aluno para alterar dados: ");
+    printf("\nInsira o cÛdigo do aluno para alterar dados: ");
     scanf("%i", &codigo);
     
     for(i=0; i<cont; i++)
@@ -229,7 +237,7 @@ void alterar(dadosAlunos alunos[], int cont)
     }
     
     if(flag == 0)
-        printf("\nAluno n√£o encontrado.");
+        printf("\nAluno n„o encontrado.");
     
     printf("\n------------------------\n");
 }
@@ -238,8 +246,8 @@ void relatorio(dadosAlunos alunos[], int cont)
 {
     int i ;
     int aprovados = 0, reprovados = 0;
-    float media_turma = 0, taxa_apr, taxa_rep, maior_media, menor_media;
-    char verificar_status[3] = {'A', 'P', 'R'};
+    float media_turma = 0, maior_media, menor_media;
+    float taxa_apr, taxa_rep ; 
     
     for(i=0; i<cont; i++)
     {
@@ -269,10 +277,10 @@ void relatorio(dadosAlunos alunos[], int cont)
     taxa_rep = (reprovados / cont) * 100 ;
     
     printf("------------------------");
-    printf("\nTotal de Estudantes: %i\nM√©dia da Turma: %.1f\n", cont, media_turma);
-    printf("N√∫mero de Aprovados: %i\nN√∫mero de Reprovados: %i\n", aprovados, reprovados);
-    printf("Taxa de Aprovados: %.1f%%\nTaxa de Reprovados: %.1f%%\n", taxa_apr, taxa_rep);
-    printf("Maior M√©dia: %.1f\nMenor M√©dia: %.1f\n", maior_media, menor_media);
+    printf("\nTotal de Estudantes: %i\n\nMÈdia da Turma: %.1f\n\n", cont, media_turma);
+    printf("N˙mero de Aprovados: %i\nN˙mero de Reprovados: %i\n\n", aprovados, reprovados);
+    printf("Taxa de AprovaÁ„o: %.1f%%\nTaxa de ReprovaÁ„o: %.1f%%\n\n", taxa_apr, taxa_rep);
+    printf("Maior MÈdia: %.1f\nMenor MÈdia: %.1f\n", maior_media, menor_media);
     printf("------------------------\n");
 }
 
