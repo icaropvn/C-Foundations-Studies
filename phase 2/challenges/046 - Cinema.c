@@ -160,7 +160,7 @@ void escolher(int sala[L][C], int *reserva)
             	if(answer == 2)
             		lugar_livre = 1;
             	else if(answer != 1)
-            		printf("\nEscolha Inválida\n");
+            		printf("\nEscolha Inválida\n\n");
 			}
         }
         
