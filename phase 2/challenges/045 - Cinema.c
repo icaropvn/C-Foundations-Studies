@@ -102,7 +102,7 @@ void mostrar_sala(int sala[L][C])
     int i, j;
     
     printf("-----------------------------------------\n");
-    printf("Lugares Disponíveis:\n\n");
+    printf("Visão da Sala:\n\n");
     
     for(i=0; i<L; i++)
     {
@@ -149,8 +149,16 @@ void escolher(int sala[L][C], int *reserva)
         {
             answer = 0;
 			
-			printf("\nLugar já reservado.\n");
-            printf("-----------------------------------------\n");
+			if(lugar > 0 && lugar < 61)
+			{
+				printf("\nLugar já reservado.\n");
+	            printf("-----------------------------------------\n");
+        	}
+            else
+            {
+            	printf("\nLugar escolhido não existe.\n");
+	            printf("-----------------------------------------\n");
+			}
             
             while(answer != 1 && answer != 2)
             {
