@@ -10,7 +10,7 @@
 
 int simular_cedulas(int notas[]);
 
-void menu(float *saldo, int notas[], int quant_notas);
+void menu(float saldo, int notas[], int quant_notas);
 
 void sacar(float *saldo, int notas[], int quant_notas);
 int verificar_notas(int saque, int notas[], int quant_notas);
@@ -32,7 +32,7 @@ int main()
 	quantidade_notas = simular_cedulas(notas);
 	saldo = (rand() % 5000) + ((float)(rand() % 100) / 100);
 	
-	menu(&saldo, notas, quantidade_notas);
+	menu(saldo, notas, quantidade_notas);
 	
 	return 0;
 }
@@ -43,7 +43,6 @@ int simular_cedulas(int notas[])
 	int quantidade_notas, temp;
 	
 	quantidade_notas = (rand() % 5) + 1;
-	printf("Quantidade de notas: %i\n\n", quantidade_notas);
 	
 	while(cont < (6 - quantidade_notas))
 	{
@@ -59,7 +58,7 @@ int simular_cedulas(int notas[])
 	return quantidade_notas;
 }
 
-void menu(float *saldo, int notas[], int quant_notas)
+void menu(float saldo, int notas[], int quant_notas)
 {
 	char answer;
 	
@@ -177,6 +176,11 @@ int verificar_notas(int saque, int notas[], int quant_notas)
 		return 1;
 	else
 		return 0;
+}
+
+void depositar(float *saldo)
+{
+	
 }
 
 void definir_cedulas(int saque, int notas[])
