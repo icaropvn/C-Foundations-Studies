@@ -8,26 +8,58 @@
 #include <locale.h>
 #include <time.h>
 
-void menu(float saldo);
-void sacar(float *saldo);
-void definir_cedulas(int saque);
+int simular_cedulas(int notas[]);
+
+void menu(float *saldo, int notas[], int quant_notas);
+
+void sacar(float *saldo, int notas[], int quant_notas);
+int verificar_notas(int saque, int notas[], int quant_notas);
+void definir_cedulas(int saque, int notas[]);
+
+void depositar(float *saldo);
+
 int confirmar_transacao(int valor);
 
 int main()
 {
 	float saldo;
+	int notas[6] = {200, 100, 50, 20, 10, 5};
+	int quantidade_notas;
 	
 	setlocale(LC_ALL, "Portuguese");
 	srand(time(NULL));
 	
+	quantidade_notas = simular_cedulas(notas);
 	saldo = (rand() % 5000) + ((float)(rand() % 100) / 100);
 	
-	menu(saldo);
+	menu(&saldo, notas, quantidade_notas);
 	
 	return 0;
 }
 
-void menu(float saldo)
+int simular_cedulas(int notas[])
+{
+	int cont = 0;
+	int quantidade_notas, temp;
+	
+	quantidade_notas = (rand() % 5) + 1;
+	printf("Quantidade de notas: %i\n\n", quantidade_notas);
+	
+	while(cont < (6 - quantidade_notas))
+	{
+		temp = rand() % 6;
+		
+		if(notas[temp] != 0)
+		{
+			notas[temp] = 0;
+			cont++;
+		}
+	}
+	
+	return quantidade_notas;
+}
+
+void menu(float *saldo, int notas[], int quant_notas)
 {
 	char answer;
 	
@@ -39,80 +71,146 @@ void menu(float saldo)
 		
 		if(answer == 'A' || answer == 'a')
 		{
-			sacar(&saldo);
+			sacar(&saldo, notas, quant_notas);
 		}
 		else if(answer == 'B' || answer == 'b')
 		{
-			
+			depositar(&saldo);
 		}
 	}
 }
 
-void sacar(float *saldo)
+void sacar(float *saldo, int notas[], int quant_notas)
 {
+	int i;
 	char answer;
 	int saque;
 	
-	printf("------------------------------------------\n");
-	printf("[A] - Digitar Valor para Sacar\n[B] - Voltar para o Menu\nR: ");
-	scanf(" %c", &answer);
-	
-	printf("------------------------------------------\n");
+	while(1)
+	{
+		printf("------------------------------------------\n");
+		printf("[A] - Digitar Valor para Sacar\n[B] - Voltar para o Menu\nR: ");
+		scanf(" %c", &answer);
+		
+		if(answer == 'A' || answer == 'a' || answer == 'B' || answer == 'b')
+			break;
+		else
+			printf("\nOpção Inválida.\n");
+	}
 	
 	if(answer == 'A' || answer == 'a')
 	{
-		printf("Notas disponíveis hoje: [colocar data do dia de hoje]\n");
-		printf("[randomizar notas disponiveis]\n - R$200,00\n - R$100,00\n - R$50,00\n - R$20,00\n - R$10,00\n - R$5,00\n\n");
+		printf("------------------------------------------\n");
+		printf("Notas disponíveis hoje [colocar data do dia de hoje]:\n");
 		
-		printf("Saldo Atual: R$%.2f\n", *saldo);
-		printf("Digite o valor desejado para sacar: R$");
-		scanf("%i", &saque);
-		
-		if(saque < *saldo)
+		for(i=0; i<6; i++)
 		{
-			printf("------------------------------------------\n");
-			printf("Você receberá:\n");
-			definir_cedulas(saque);
-			
-			if(confirmar_transacao(saque))
+			if(notas[i] != 0)
+				printf(" - R$%i,00\n", notas[i]);
+		}
+		
+		printf("\nSaldo Atual: R$%.2f\n", *saldo);
+		printf("Digite o valor desejado para sacar: R$");
+		scanf("%i", &saque);	
+
+		if(saque < *saldo)
+		{	
+			if(verificar_notas(saque, notas, quant_notas))
 			{
-				*saldo -= saque;
-				printf("Saque realizado com sucesso! Retire as cédulas ao lado.");
+				printf("------------------------------------------\n");
+				printf("Você receberá:\n");
+				definir_cedulas(saque, notas);
+				
+				printf("\n");
+				
+				if(confirmar_transacao(saque))
+				{
+					*saldo -= saque;
+					printf("\nSaque realizado com sucesso! Retire as cédulas ao lado.\n");
+					printf("----------------------------------------------------------\n");
+				}
+				else
+				{
+					printf("\nCancelando Operação...");
+					sleep(2);
+					printf("\nOperação Cancelada.\n");
+					printf("------------------------------------------\n");
+				}
 			}
 			else
-				printf("\nOperação Cancelada.\n");
+			{
+				printf("\nO valor desejado é inválido devido às notas disponíveis do dia.\n");
+				printf("---------------------------------------------------------------\n");
+			}
+		}
+		else
+		{
+			printf("\nOperação Cancelada. O valor de saque desejado é maior que seu saldo atual.\n");
+			printf("---------------------------------------------------------------\n");
 		}
 	}
-	else if(answer == 'B' || answer == 'b')
+	else
 	{
-		
+		printf("\nVoltando para o menu...\n");
+		printf("--------------------------\n");
+		sleep(2);
 	}
 }
 
-void definir_cedulas(int saque)
+int verificar_notas(int saque, int notas[], int quant_notas)
+{
+	int i;
+	int cont = 0;
+	
+	for(i=0; i<6; i++)
+	{
+		if(notas[i] != 0 && saque % notas[i] == 0)
+		{
+			saque = saque % notas[i];
+			
+			if(saque == 0)
+				break;
+		}
+	}
+	
+	if(saque == 0)
+		return 1;
+	else
+		return 0;
+}
+
+void definir_cedulas(int saque, int notas[])
 {
 	int i;
 	int cont;
-	int notas[4] = {100, 50, 20, 10};
-	int quant_notas[4] = {0, 0, 0, 0};
+	int quant_notas[6] = {0, 0, 0, 0, 0, 0};
 	
-	for(i=0; i<4; i++)
+	for(i=0; i<6; i++)
 	{
-		if(saque >= notas[i])
+		if(notas[i] != 0)
 		{
-			cont = i;
-			break;
+			if(saque >= notas[i])
+			{
+				cont = i;
+				break;
+			}
 		}
 	}
 		
-	while(cont <= 3 && saque > 0)
-	{		
-		quant_notas[cont] = saque / notas[cont] ;
-		saque = saque % notas[cont] ;
+	while(cont <= 6 && saque > 0)
+	{
+		if(notas[cont] != 0)
+		{
+			quant_notas[cont] = saque / notas[cont] ;
+			saque = saque % notas[cont] ;
+		}	
+		else
+			quant_notas[cont] = 0;
+		
 		cont++ ;
 	}
 	
-	for(i=0; i<4; i++)
+	for(i=0; i<6; i++)
 	{
 		if(quant_notas[i] > 1)
 			printf("%i Notas de R$%i,00\n", quant_notas[i], notas[i]);
@@ -120,7 +218,7 @@ void definir_cedulas(int saque)
 			printf("%i Nota de R$%i,00\n", quant_notas[i], notas[i]);
 	}
 		
-	for(i=0; i<4; i++)
+	for(i=0; i<6; i++)
 	{
 		quant_notas[i] = 0;
 	}
