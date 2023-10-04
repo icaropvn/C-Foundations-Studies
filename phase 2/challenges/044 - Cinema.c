@@ -1,4 +1,4 @@
-//
+// Algoritmo para um sistema de reserva de poltronas em um cinema
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -8,23 +8,23 @@
 #define C 10
 
 void atribuir_lugares(int sala[L][C]);
-void simular_escolhas(int sala[L][C]);
-void menu(int sala[L][C], int reserva);
+void simular_escolhas(int sala[L][C], int *lugares);
+void menu(int sala[L][C], int reserva, int lugares);
 void mostrar_sala(int sala[L][C]);
-void escolher(int sala[L][C], int *reserva);
+void escolher(int sala[L][C], int *reserva, int *lugares);
 
 int main()
 {
     int sala[L][C];
-    int reserva = 0;
+    int reserva = 0, lugares = 60;
     
     setlocale(LC_ALL, "Portuguese");
     srand(time(NULL));
     
     atribuir_lugares(sala);
-    simular_escolhas(sala);
+    simular_escolhas(sala, &lugares);
     
-    menu(sala, reserva);
+    menu(sala, reserva, lugares);
     
     return 0;
 }
@@ -44,12 +44,15 @@ void atribuir_lugares(int sala[L][C])
     }
 }
 
-void simular_escolhas(int sala[L][C])
+void simular_escolhas(int sala[L][C], int *lugares)
 {
 	int i, j;
 	int temp, cont = 0;
+	int quantidade_lugares ;
 	
-	while(cont < 30)
+	quantidade_lugares = (rand() % 31) + 1;
+	
+	while(cont < quantidade_lugares)
 	{
 		temp = (rand() % 60) + 1;
 		
@@ -61,19 +64,21 @@ void simular_escolhas(int sala[L][C])
 				{
 					sala[i][j] = 0 ;
 					cont++;
+					*lugares = *lugares - 1 ;
 				}
 			}
 		}
 	}
 }
 
-void menu(int sala[L][C], int reserva)
+void menu(int sala[L][C], int reserva, int lugares)
 {
     int answer;
     
     while(answer != 3)
     {
-        printf("Escolha uma opção:\n[1] Exibir Sala\n[2] Escolher Lugar\n[3] Sair\nR: ");
+        printf("Lugares Disponíveis no Momento: %i\n\n", lugares);
+		printf("Escolha uma opção:\n[1] Exibir Sala\n[2] Escolher Lugar\n[3] Sair\nR: ");
         scanf("%i", &answer);
         
         switch(answer)
@@ -82,7 +87,7 @@ void menu(int sala[L][C], int reserva)
                 mostrar_sala(sala);
                 break;
             case 2:
-                escolher(sala, &reserva);
+                escolher(sala, &reserva, &lugares);
                 break;
             case 3:
                 if(reserva == 0)
@@ -91,7 +96,8 @@ void menu(int sala[L][C], int reserva)
 					printf("\nEsperamos que goste do filme!\n");
                 break;
             default:
-                printf("\nResposta Inválida.\n\n");
+                printf("\nResposta Inválida.\n");
+                printf("-----------------------------------------\n");
                 break;
         }
     }
@@ -119,7 +125,7 @@ void mostrar_sala(int sala[L][C])
     printf("-----------------------------------------\n");
 }
 
-void escolher(int sala[L][C], int *reserva)
+void escolher(int sala[L][C], int *reserva, int *lugares)
 {
     int i, j;
     int lugar, lugar_livre = 0;
@@ -141,6 +147,8 @@ void escolher(int sala[L][C], int *reserva)
                     sala[i][j] = 0 ;
                     lugar_livre = 1;
                     *reserva = 1;
+                    *lugares = *lugares - 1 ;
+                    printf("\nLugar reservado com sucesso!\n");
                 }
             }
         }
