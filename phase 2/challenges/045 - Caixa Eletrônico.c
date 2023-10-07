@@ -3,36 +3,54 @@
 // colocar sistema de cadastramento inicial
 // colocar sistema de login com senha (personalizar de acordo com o usuario)
 
+// PROBLEMA ATUAL: extrato não printa operações após a primeira
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <locale.h>
 #include <time.h>
 
+typedef struct
+{
+	int dia, mes, ano;
+	int hora, minuto, segundo;
+	char tipo;
+	float valor;
+} dadosExtrato;
+
 int simular_cedulas(int notas[]);
 
-void menu(float saldo, int notas[], int quant_notas);
+void menu(float saldo, int notas[], int quant_notas, dadosExtrato dados[], int tam);
 
-void sacar(float *saldo, int notas[], int quant_notas);
+void sacar(float *saldo, int notas[], int quant_notas, dadosExtrato dados[], int *tam);
 int verificar_notas(int saque, int notas[], int quant_notas);
 void definir_cedulas(int saque, int notas[]);
 
-void depositar(float *saldo);
+void depositar(float *saldo, dadosExtrato dados[], int *tam);
 
-int confirmar_transacao(int valor);
+void verificar_saldo(float *saldo, int notas[], int quant_notas, dadosExtrato dados[], int *tam);
+
+void extrato(dadosExtrato dados[], int tam);
+
+int confirmar_transacao(float valor);
 
 int main()
 {
 	float saldo;
 	int notas[6] = {200, 100, 50, 20, 10, 5};
 	int quantidade_notas;
+	int tam = 1;
+	dadosExtrato *dados;
 	
 	setlocale(LC_ALL, "Portuguese");
 	srand(time(NULL));
 	
+	dados = calloc(tam, sizeof(dadosExtrato));
+	
 	quantidade_notas = simular_cedulas(notas);
 	saldo = (rand() % 5000) + ((float)(rand() % 100) / 100);
 	
-	menu(saldo, notas, quantidade_notas);
+	menu(saldo, notas, quantidade_notas, dados, tam);
 	
 	return 0;
 }
@@ -58,28 +76,36 @@ int simular_cedulas(int notas[])
 	return quantidade_notas;
 }
 
-void menu(float saldo, int notas[], int quant_notas)
+void menu(float saldo, int notas[], int quant_notas, dadosExtrato dados[], int tam)
 {
 	char answer;
 	
-	while(answer != 'D' && answer != 'd')
+	while(answer != 'E' && answer != 'e')
 	{
 		printf("Bem-Vindo [NOME DO USUARIO]!\nO que deseja fazer hoje?\n");
-		printf("[A] Sacar\n[B] Depositar\n[C] Verificar Saldo\n[D] Sair\nR: ");
+		printf("[A] Sacar\n[B] Depositar\n[C] Verificar Saldo\n[D] Extrato\n[E] Sair\nR: ");
 		scanf(" %c", &answer);
 		
 		if(answer == 'A' || answer == 'a')
 		{
-			sacar(&saldo, notas, quant_notas);
+			sacar(&saldo, notas, quant_notas, dados, &tam);
 		}
 		else if(answer == 'B' || answer == 'b')
 		{
-			depositar(&saldo);
+			depositar(&saldo, dados, &tam);
+		}
+		else if(answer == 'C' || answer == 'c')
+		{
+			verificar_saldo(&saldo, notas, quant_notas, dados, &tam);
+		}
+		else if(answer == 'D' || answer == 'd')
+		{
+			extrato(dados, tam);
 		}
 	}
 }
 
-void sacar(float *saldo, int notas[], int quant_notas)
+void sacar(float *saldo, int notas[], int quant_notas, dadosExtrato dados[], int *tam)
 {
 	int i;
 	char answer;
@@ -125,6 +151,11 @@ void sacar(float *saldo, int notas[], int quant_notas)
 				if(confirmar_transacao(saque))
 				{
 					*saldo -= saque;
+					
+					dados[*tam-1].valor = saque;
+					*tam = *tam + 1;
+					dados = realloc(dados, *tam);
+					
 					printf("\nSaque realizado com sucesso! Retire as cédulas ao lado.\n");
 					printf("----------------------------------------------------------\n");
 				}
@@ -140,6 +171,7 @@ void sacar(float *saldo, int notas[], int quant_notas)
 			{
 				printf("\nO valor desejado é inválido devido às notas disponíveis do dia.\n");
 				printf("---------------------------------------------------------------\n");
+				sleep(2);
 			}
 		}
 		else
@@ -176,11 +208,6 @@ int verificar_notas(int saque, int notas[], int quant_notas)
 		return 1;
 	else
 		return 0;
-}
-
-void depositar(float *saldo)
-{
-	
 }
 
 void definir_cedulas(int saque, int notas[])
@@ -228,7 +255,97 @@ void definir_cedulas(int saque, int notas[])
 	}
 }
 
-int confirmar_transacao(int valor)
+void depositar(float *saldo, dadosExtrato dados[], int *tam)
+{
+	float deposito;
+	int aux;
+	
+	printf("-------------------------------------------\n");
+	
+	while(aux != deposito)
+	{
+		printf("Saldo Atual: R$%.2f", *saldo);
+		printf("\nInsira o valor desejado para depositar: R$");
+		scanf("%f", &deposito);
+		
+		aux = deposito;
+		
+		if(aux == deposito)
+		{
+			printf("\n");
+			
+			if(confirmar_transacao(deposito))
+			{
+				*saldo += deposito;
+				printf("\nDepósito realizado com sucesso!\nNovo Saldo: R$%.2f\n", *saldo);
+				printf("------------------------------------------\n");
+				sleep(2);
+			}
+			else
+			{
+				printf("\nCancelando Operação...");
+				sleep(2);
+				printf("\nOperação Cancelada.\n");
+				printf("------------------------------------------\n");
+			}
+		}
+		else
+		{
+			printf("\nValor inválido para realizar depósito. Tente novamente.\n\n");
+		}
+	}
+}
+
+void verificar_saldo(float *saldo, int notas[], int quant_notas, dadosExtrato dados[], int *tam)
+{
+	char answer;
+	
+	printf("------------------------------\n");
+	
+	while(1)
+	{
+		printf("Saldo Atual: R$%.2f", *saldo);
+		
+		printf("\n\nDeseja realizar alguma operação?\n");
+		printf("[A] Saque\n[B] Depósito\n[C] Voltar para o menu\nR: ");
+		scanf(" %c", &answer);
+		
+		if(answer == 'A' || answer == 'a')
+		{
+			sacar(&*saldo, notas, quant_notas, dados, tam);
+			break;
+		}
+		else if(answer == 'B' || answer == 'b')
+		{
+			depositar(&*saldo, dados, &*tam);
+			break;
+		}
+		else if(answer == 'C' || answer == 'c')
+		{
+			printf("\nVoltando para o menu...\n");
+			sleep(2);
+			printf("------------------------------\n");
+			break;
+		}
+		else
+			printf("\nOpção Inválida.\n\n");
+	}
+}
+
+void extrato(dadosExtrato dados[], int tam)
+{
+	int i;
+	
+	printf("----------------------------------------------------------\n");
+	
+	for(i=0; i<tam-1; i++)
+	{
+		printf("Valor transação %i: %.2f\n\n", i, dados[i].valor);
+	}
+	printf("----------------------------------------------------------\n");
+}
+
+int confirmar_transacao(float valor)
 {
 	char answer;
 	
