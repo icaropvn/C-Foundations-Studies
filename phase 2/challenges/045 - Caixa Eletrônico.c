@@ -45,7 +45,7 @@ int main()
 	setlocale(LC_ALL, "Portuguese");
 	srand(time(NULL));
 	
-	dados = calloc(tam, sizeof(dadosExtrato));
+	dados = (dadosExtrato *) malloc(tam * sizeof(dadosExtrato));
 	
 	quantidade_notas = simular_cedulas(notas);
 	saldo = (rand() % 5000) + ((float)(rand() % 100) / 100);
@@ -154,8 +154,9 @@ void sacar(float *saldo, int notas[], int quant_notas, dadosExtrato dados[], int
 					
 					dados[*tam-1].valor = saque;
 					*tam = *tam + 1;
-					dados = realloc(dados, *tam);
+					dados = (dadosExtrato *) realloc(dados, *tam * sizeof(dadosExtrato));
 					
+
 					printf("\nSaque realizado com sucesso! Retire as cédulas ao lado.\n");
 					printf("----------------------------------------------------------\n");
 				}
