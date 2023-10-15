@@ -2,6 +2,8 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <locale.h>
+#include <time.h>
 
 typedef struct 
 {
@@ -11,15 +13,25 @@ typedef struct
 	float valor;
 } dadosExtrato;
 
-void sacar(int *saldo, dadosExtrato dados[], int *tam);
+//int simular_cedulas(int cedulas[]);
+
+//void menu(float saldo, int cedulas[], int quant_cedulas, dadosExtrato dados, int tam);
+
+void sacar(float *saldo, dadosExtrato dados[], int *tam);
 void extrato(dadosExtrato dados[], int tam);
 
 int main()
 {
-	int answer;
-	int saldo = 9999 ;
+	float saldo = 9999.99;
+	//int cedulas[6] = {200, 100, 50, 20, 10, 5};
+	//int quantidade_notas;
 	int tam = 1;
 	dadosExtrato *dados;
+	
+	int answer;
+	
+	//setlocale(LC_ALL, "Portuguese");
+	//srand(time(NULL));
 	
 	dados = malloc(tam * sizeof(dadosExtrato));
 	
@@ -39,13 +51,13 @@ int main()
 	return 0;
 }
 
-void sacar(int *saldo, dadosExtrato dados[], int *tam)
+void sacar(float *saldo, dadosExtrato dados[], int *tam)
 {
 	int saque;
 	
 	printf("------------------\n");
 	
-	printf("Saldo Atual: %i\n\nQuanto deseja sacar?\nR$", *saldo);
+	printf("Saldo Atual: %.2f\n\nQuanto deseja sacar?\nR$", *saldo);
 	scanf("%i", &saque);
 	
 	*saldo -= saque;

@@ -3,7 +3,8 @@
 // colocar sistema de cadastramento inicial
 // colocar sistema de login com senha (personalizar de acordo com o usuario)
 
-// PROBLEMA ATUAL: extrato não printa operações após a primeira
+// PROBLEMA 001: realloc não funciona junto com setlocale
+// PROBLEMA 002: imprimir hora dá errado (imprime 00) + não funciona junto com realloc as funções de manipulação de tempo
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -25,6 +26,8 @@ void menu(float saldo, int notas[], int quant_notas, dadosExtrato dados[], int t
 void sacar(float *saldo, int notas[], int quant_notas, dadosExtrato dados[], int *tam);
 int verificar_notas(int saque, int notas[], int quant_notas);
 void definir_cedulas(int saque, int notas[]);
+//void guardar_momento_transacao(dadosExtrato dados[], int *tam);................não funciona junto realloc
+int realocar_memoria_extrato(dadosExtrato dados[], int *tam);
 
 void depositar(float *saldo, dadosExtrato dados[], int *tam);
 
@@ -42,7 +45,7 @@ int main()
 	int tam = 1;
 	dadosExtrato *dados;
 	
-	setlocale(LC_ALL, "Portuguese");
+	//setlocale(LC_ALL, "Portuguese");................não funciona junto realloc
 	srand(time(NULL));
 	
 	dados = malloc(tam * sizeof(dadosExtrato));
@@ -50,7 +53,9 @@ int main()
 	quantidade_notas = simular_cedulas(notas);
 	saldo = (rand() % 5000) + ((float)(rand() % 100) / 100);
 	
-	menu(saldo, notas, quantidade_notas, dados, tam);
+	menu(saldo, notas, quantidade_notas, dados, tam); 
+	
+	free(dados);
 	
 	return 0;
 }
@@ -110,6 +115,7 @@ void sacar(float *saldo, int notas[], int quant_notas, dadosExtrato dados[], int
 	int i;
 	char answer;
 	int saque;
+	time_t momento_transacao;
 	
 	while(1)
 	{
@@ -153,9 +159,11 @@ void sacar(float *saldo, int notas[], int quant_notas, dadosExtrato dados[], int
 					*saldo -= saque;
 					
 					dados[*tam-1].valor = saque;
-					*tam = *tam + 1;
+					dados[*tam-1].tipo = '-';
 					
-					dados = realloc(dados, *tam * sizeof(dadosExtrato));
+					//guardar_momento_transacao(dados, &*tam);................não funciona junto realloc
+					
+					realocar_memoria_extrato(dados, &*tam);
 					
 					printf("\nSaque realizado com sucesso! Retire as cédulas ao lado.\n");
 					printf("----------------------------------------------------------\n");
@@ -256,6 +264,27 @@ void definir_cedulas(int saque, int notas[])
 	}
 }
 
+/*
+void guardar_momento_transacao(dadosExtrato dados[], int *tam)..........não funciona junto realloc
+{
+	time_t momento_transacao;
+	
+	time(&momento_transacao);
+	struct tm *local = localtime(&momento_transacao);
+					
+	dados[*tam-1].hora = local->tm_hour;................................ta imprimindo a hora zerada (00)
+	dados[*tam-1].minuto = local->tm_min;
+	dados[*tam-1].segundo = local->tm_sec;
+}
+*/
+
+int realocar_memoria_extrato(dadosExtrato dados[], int *tam)
+{
+	*tam = *tam + 1;
+				
+	dados = realloc(dados, *tam * sizeof(dadosExtrato));
+}
+
 void depositar(float *saldo, dadosExtrato dados[], int *tam)
 {
 	float deposito;
@@ -278,6 +307,14 @@ void depositar(float *saldo, dadosExtrato dados[], int *tam)
 			if(confirmar_transacao(deposito))
 			{
 				*saldo += deposito;
+				
+				dados[*tam-1].valor = deposito;
+				dados[*tam-1].tipo = '+';
+				
+				//guardar_momento_transacao(dados, &*tam);................não funciona junto realloc
+				
+				realocar_memoria_extrato(dados, &*tam);
+				
 				printf("\nDepósito realizado com sucesso!\nNovo Saldo: R$%.2f\n", *saldo);
 				printf("------------------------------------------\n");
 				sleep(2);
@@ -341,7 +378,8 @@ void extrato(dadosExtrato dados[], int tam)
 	
 	for(i=0; i<tam-1; i++)
 	{
-		printf("Valor transação %i: R$%.2f\n\n", i, dados[i].valor);
+		printf("| Hora     | Tipo | Valor   |\n");
+		printf("| %02d:%02d:%02d |    %c | R$%.2f |\n\n", dados[i].hora, dados[i].minuto, dados[i].segundo, dados[i].tipo, dados[i].valor);
 	}
 	printf("----------------------------------------------------------\n");
 }
