@@ -1,3 +1,9 @@
+/*
+- Implementar print dos números na ordem que eles aparecem no vetor original
+
+- Implementar print formatado: "Número X duplicado X vez(es), na(s) posição(ões) X1, X2 e X3"
+*/
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <locale.h>
@@ -11,6 +17,7 @@ void verificar(int vetor[]);
 
 int main()
 {
+	int answer;
 	int vetor[TAM];
 	int vet_aux[TAM];
 	
@@ -24,12 +31,16 @@ int main()
 	
 	ordenar(vetor);
 	
+	/*
 	printf("\nVetor Ordenado = ");
 	imprimir(vetor);
+	*/
 	
-	printf("\n\n");
-
+	printf("\n");
+	
 	verificar(vetor);
+	
+	printf("\n");
 	
 	return 0;
 }
@@ -40,7 +51,7 @@ void preencher(int vetor[], int vet_aux[])
 	
 	for(i=0; i<TAM; i++)
 	{
-		vetor[i] = rand() % 11 ;
+		vetor[i] = (rand() % 10) + 1 ;
 		vet_aux[i] = vetor[i];
 	}
 }
@@ -81,29 +92,35 @@ void ordenar(int vetor[])
 
 void verificar(int vetor[])
 {
-	int i = 0, j = 1;
+	int i = 0, j;
+	int posicao;
 	int cont = 0;
 	
 	while(i < TAM)
 	{
 		while(1)
 		{
-			if(vetor[i] != vetor[j])
-				break;
+			j = i + 1;
 			
-			cont++;
-			j++;
-		}
-		
-		if(vetor[i] != vetor[j])
-		{	
-			i = j;
-			j = i+1;
+			if(vetor[i] == vetor[j])
+			{
+				cont++;
+				i++;
+				posicao = i;
+			}
+			else
+				break;
 		}
 		
 		if(cont != 0)
-			printf("\nNúmero %i duplicado %i vez(es)!", vetor[i], cont);
-			
+		{
+			if(cont == 1)
+				printf("\nNúmero %i duplicado %i vez!", vetor[i], cont, posicao);
+			else if(cont > 1)
+				printf("\nNúmero %i duplicado %i vezes!", vetor[i], cont);
+		}
+		
+		i++;	
 		cont = 0;
 	}	
-}	
+}
