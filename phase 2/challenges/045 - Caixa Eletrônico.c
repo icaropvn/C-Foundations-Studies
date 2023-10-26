@@ -37,6 +37,8 @@ void verificar_saldo(float *saldo, int notas[], int quant_notas, dadosExtrato da
 
 void extrato(dadosExtrato dados[], int cont);
 
+char confirmarSaida();
+
 int confirmar_transacao(float valor);
 
 int main()
@@ -100,7 +102,7 @@ void menu(float saldo, int notas[], int quant_notas, dadosExtrato dados[], int d
 	
 	while(answer != 'E' && answer != 'e')
 	{
-		printf("Bem-Vindo [NOME DO USUARIO]!\nO que deseja fazer hoje?\n");
+		printf("Bem-Vindo(a)!\nO que deseja fazer hoje?\n");
 		printf("[A] Sacar\n[B] Depositar\n[C] Verificar Saldo\n[D] Extrato\n[E] Sair\nR: ");
 		scanf(" %c", &answer);
 		
@@ -119,6 +121,14 @@ void menu(float saldo, int notas[], int quant_notas, dadosExtrato dados[], int d
 		else if(answer == 'D' || answer == 'd')
 		{
 			extrato(dados, cont_transacao);
+		}
+		else if(answer == 'E' || answer == 'e')
+		{
+			answer = confirmarSaida();
+		}
+		else
+		{
+			printf("\nResposta Inválida. Escolha uma das opções.\n\n");
 		}
 	}
 }
@@ -404,13 +414,49 @@ void extrato(dadosExtrato dados[], int cont)
 	
 	printf("----------------------------------------------------------\n");
 	
-	printf("| Hora     | Tipo | Valor      |\n");
-	
-	for(i=0; i<cont; i++)
+	if(cont > 0)
 	{
-		printf("| %02d:%02d:%02d |    %c | R$%8.2f |\n", dados[i].hora, dados[i].minuto, dados[i].segundo, dados[i].tipo, dados[i].valor);
+		printf("| Hora     | Tipo | Valor      |\n");
+	
+		for(i=0; i<cont; i++)
+		{
+			printf("| %02d:%02d:%02d |    %c | R$%8.2f |\n", dados[i].hora, dados[i].minuto, dados[i].segundo, dados[i].tipo, dados[i].valor);
+		}
+		printf("----------------------------------------------------------\n");
 	}
+	else
+	{
+		printf("Você ainda não realizou nenhuma transação.\nExtrato Inexistente.\n");
+		printf("----------------------------------------------------------\n");
+	}
+}
+
+char confirmarSaida()
+{
+	char answer;
+	
 	printf("----------------------------------------------------------\n");
+
+	while(1)
+	{
+		printf("Tem certeza que deseja sair?\n\n[A] Confirmar Saída\n[B] Retornar ao Menu\nR: ");
+		scanf(" %c", &answer);
+		
+		if(answer == 'A' || answer == 'a')
+		{
+			printf("----------------------------------------------------------\n");
+			printf("\nAté mais! Volte sempre.");
+			return 'e';
+		}
+		else if(answer == 'B' || answer == 'b')
+		{
+			printf("----------------------------------------------------------\n");
+			return 'a';
+		}
+		else
+			printf("\nOpção Inválida.\n\n");
+	}
+	
 }
 
 int confirmar_transacao(float valor)
