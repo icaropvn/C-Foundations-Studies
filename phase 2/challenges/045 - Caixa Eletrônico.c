@@ -10,6 +10,7 @@
 #include <stdlib.h>
 #include <locale.h>
 #include <time.h>
+#define LIMIT 15
 
 typedef struct
 {
@@ -19,21 +20,22 @@ typedef struct
 	float valor;
 } dadosExtrato;
 
+void diaHoje(int date[]);
+
 int simular_cedulas(int notas[]);
 
-void menu(float saldo, int notas[], int quant_notas, dadosExtrato dados[], int tam);
+void menu(float saldo, int notas[], int quant_notas, dadosExtrato dados[], int date[]);
 
-void sacar(float *saldo, int notas[], int quant_notas, dadosExtrato dados[], int *tam);
+void sacar(float *saldo, int notas[], int quant_notas, dadosExtrato dados[], int *cont, int date[]);
 int verificar_notas(int saque, int notas[], int quant_notas);
 void definir_cedulas(int saque, int notas[]);
-//void guardar_momento_transacao(dadosExtrato dados[], int *tam);................não funciona junto realloc
-int realocar_memoria_extrato(dadosExtrato dados[], int *tam);
+void guardar_momento_transacao(dadosExtrato dados[], int cont);
 
-void depositar(float *saldo, dadosExtrato dados[], int *tam);
+void depositar(float *saldo, dadosExtrato dados[], int *cont);
 
-void verificar_saldo(float *saldo, int notas[], int quant_notas, dadosExtrato dados[], int *tam);
+void verificar_saldo(float *saldo, int notas[], int quant_notas, dadosExtrato dados[], int *cont, int date[]);
 
-void extrato(dadosExtrato dados[], int tam);
+void extrato(dadosExtrato dados[], int cont);
 
 int confirmar_transacao(float valor);
 
@@ -42,22 +44,32 @@ int main()
 	float saldo;
 	int notas[6] = {200, 100, 50, 20, 10, 5};
 	int quantidade_notas;
-	int tam = 1;
-	dadosExtrato *dados;
+	dadosExtrato dados[LIMIT];
+	int today_date[3];
 	
-	//setlocale(LC_ALL, "Portuguese");................não funciona junto realloc
+	setlocale(LC_ALL, "Portuguese");
 	srand(time(NULL));
 	
-	dados = malloc(tam * sizeof(dadosExtrato));
+	diaHoje(today_date);
 	
 	quantidade_notas = simular_cedulas(notas);
 	saldo = (rand() % 5000) + ((float)(rand() % 100) / 100);
 	
-	menu(saldo, notas, quantidade_notas, dados, tam); 
-	
-	free(dados);
+	menu(saldo, notas, quantidade_notas, dados, today_date);
 	
 	return 0;
+}
+
+void diaHoje(int date[])
+{
+	time_t today_date;
+	
+	time(&today_date);
+	struct tm *local = localtime(&today_date);
+					
+	date[0] = local -> tm_mday;
+	date[1] = local -> tm_mon + 1;
+	date[2] = local -> tm_year + 1900;
 }
 
 int simular_cedulas(int notas[])
@@ -81,8 +93,9 @@ int simular_cedulas(int notas[])
 	return quantidade_notas;
 }
 
-void menu(float saldo, int notas[], int quant_notas, dadosExtrato dados[], int tam)
+void menu(float saldo, int notas[], int quant_notas, dadosExtrato dados[], int date[])
 {
+	int cont_transacao = 0;
 	char answer;
 	
 	while(answer != 'E' && answer != 'e')
@@ -93,33 +106,33 @@ void menu(float saldo, int notas[], int quant_notas, dadosExtrato dados[], int t
 		
 		if(answer == 'A' || answer == 'a')
 		{
-			sacar(&saldo, notas, quant_notas, dados, &tam);
+			sacar(&saldo, notas, quant_notas, dados, &cont_transacao, date);
 		}
 		else if(answer == 'B' || answer == 'b')
 		{
-			depositar(&saldo, dados, &tam);
+			depositar(&saldo, dados, &cont_transacao);
 		}
 		else if(answer == 'C' || answer == 'c')
 		{
-			verificar_saldo(&saldo, notas, quant_notas, dados, &tam);
+			verificar_saldo(&saldo, notas, quant_notas, dados, &cont_transacao, date);
 		}
 		else if(answer == 'D' || answer == 'd')
 		{
-			extrato(dados, tam);
+			extrato(dados, cont_transacao);
 		}
 	}
 }
 
-void sacar(float *saldo, int notas[], int quant_notas, dadosExtrato dados[], int *tam)
+void sacar(float *saldo, int notas[], int quant_notas, dadosExtrato dados[], int *cont, int date[])
 {
 	int i;
 	char answer;
 	int saque;
-	time_t momento_transacao;
 	
 	while(1)
 	{
 		printf("------------------------------------------\n");
+		printf("Transações disponíveis para hoje: %02i\n\n", LIMIT - *cont);
 		printf("[A] - Digitar Valor para Sacar\n[B] - Voltar para o Menu\nR: ");
 		scanf(" %c", &answer);
 		
@@ -132,7 +145,7 @@ void sacar(float *saldo, int notas[], int quant_notas, dadosExtrato dados[], int
 	if(answer == 'A' || answer == 'a')
 	{
 		printf("------------------------------------------\n");
-		printf("Notas disponíveis hoje [colocar data do dia de hoje]:\n");
+		printf("Notas disponíveis hoje (%02d/%02d/%04d):\n", date[0], date[1], date[2]);
 		
 		for(i=0; i<6; i++)
 		{
@@ -156,16 +169,26 @@ void sacar(float *saldo, int notas[], int quant_notas, dadosExtrato dados[], int
 				
 				if(confirmar_transacao(saque))
 				{
-					*saldo -= saque;
+					if(*cont <= LIMIT - 1)
+					{
+						*saldo -= saque;
+						dados[*cont].valor = saque;
+						dados[*cont].tipo = '-';
+						
+						guardar_momento_transacao(dados, *cont);
+						
+						*cont = *cont + 1;
+						
+						printf("\nSaque realizado com sucesso! Retire as cédulas ao lado.\n");
+						sleep(1);
+						printf("Transações disponíveis: %0i\n", LIMIT - *cont);
+						sleep(1);
+					}
+					else
+					{
+						printf("\nLimite de transações do dia atingido. Operação Cancelada.\n");
+					}
 					
-					dados[*tam-1].valor = saque;
-					dados[*tam-1].tipo = '-';
-					
-					//guardar_momento_transacao(dados, &*tam);................não funciona junto realloc
-					
-					realocar_memoria_extrato(dados, &*tam);
-					
-					printf("\nSaque realizado com sucesso! Retire as cédulas ao lado.\n");
 					printf("----------------------------------------------------------\n");
 				}
 				else
@@ -264,28 +287,21 @@ void definir_cedulas(int saque, int notas[])
 	}
 }
 
-/*
-void guardar_momento_transacao(dadosExtrato dados[], int *tam)..........não funciona junto realloc
+
+void guardar_momento_transacao(dadosExtrato dados[], int cont)
 {
 	time_t momento_transacao;
 	
 	time(&momento_transacao);
 	struct tm *local = localtime(&momento_transacao);
 					
-	dados[*tam-1].hora = local->tm_hour;................................ta imprimindo a hora zerada (00)
-	dados[*tam-1].minuto = local->tm_min;
-	dados[*tam-1].segundo = local->tm_sec;
-}
-*/
-
-int realocar_memoria_extrato(dadosExtrato dados[], int *tam)
-{
-	*tam = *tam + 1;
-				
-	dados = realloc(dados, *tam * sizeof(dadosExtrato));
+	dados[cont].hora = local->tm_hour;
+	dados[cont].minuto = local->tm_min;
+	dados[cont].segundo = local->tm_sec;
 }
 
-void depositar(float *saldo, dadosExtrato dados[], int *tam)
+
+void depositar(float *saldo, dadosExtrato dados[], int *cont)
 {
 	float deposito;
 	int aux;
@@ -294,6 +310,8 @@ void depositar(float *saldo, dadosExtrato dados[], int *tam)
 	
 	while(aux != deposito)
 	{
+		printf("Transações disponíveis para hoje: %02i\n\n", LIMIT - *cont);
+		
 		printf("Saldo Atual: R$%.2f", *saldo);
 		printf("\nInsira o valor desejado para depositar: R$");
 		scanf("%f", &deposito);
@@ -306,18 +324,28 @@ void depositar(float *saldo, dadosExtrato dados[], int *tam)
 			
 			if(confirmar_transacao(deposito))
 			{
-				*saldo += deposito;
+				if(*cont <= LIMIT - 1)
+				{
+					*saldo += deposito;
+					
+					dados[*cont].valor = deposito;
+					dados[*cont].tipo = '+';
+					
+					guardar_momento_transacao(dados, *cont);
+					
+					*cont = *cont + 1;
+					
+					printf("\nDepósito realizado com sucesso!\nNovo Saldo: R$%.2f\n", *saldo);
+					sleep(1);
+					printf("Transações disponíveis: %02i\n", LIMIT - *cont);
+					sleep(2);
+				}
+				else
+				{
+					printf("\nLimite de transações do dia atingido. Operação Cancelada.\n");
+				}
 				
-				dados[*tam-1].valor = deposito;
-				dados[*tam-1].tipo = '+';
-				
-				//guardar_momento_transacao(dados, &*tam);................não funciona junto realloc
-				
-				realocar_memoria_extrato(dados, &*tam);
-				
-				printf("\nDepósito realizado com sucesso!\nNovo Saldo: R$%.2f\n", *saldo);
 				printf("------------------------------------------\n");
-				sleep(2);
 			}
 			else
 			{
@@ -334,7 +362,7 @@ void depositar(float *saldo, dadosExtrato dados[], int *tam)
 	}
 }
 
-void verificar_saldo(float *saldo, int notas[], int quant_notas, dadosExtrato dados[], int *tam)
+void verificar_saldo(float *saldo, int notas[], int quant_notas, dadosExtrato dados[], int *cont, int date[])
 {
 	char answer;
 	
@@ -350,12 +378,12 @@ void verificar_saldo(float *saldo, int notas[], int quant_notas, dadosExtrato da
 		
 		if(answer == 'A' || answer == 'a')
 		{
-			sacar(&*saldo, notas, quant_notas, dados, tam);
+			sacar(&*saldo, notas, quant_notas, dados, &*cont, date);
 			break;
 		}
 		else if(answer == 'B' || answer == 'b')
 		{
-			depositar(&*saldo, dados, &*tam);
+			depositar(&*saldo, dados, &*cont);
 			break;
 		}
 		else if(answer == 'C' || answer == 'c')
@@ -370,16 +398,17 @@ void verificar_saldo(float *saldo, int notas[], int quant_notas, dadosExtrato da
 	}
 }
 
-void extrato(dadosExtrato dados[], int tam)
+void extrato(dadosExtrato dados[], int cont)
 {
 	int i;
 	
 	printf("----------------------------------------------------------\n");
 	
-	for(i=0; i<tam-1; i++)
+	printf("| Hora     | Tipo | Valor      |\n");
+	
+	for(i=0; i<cont; i++)
 	{
-		printf("| Hora     | Tipo | Valor   |\n");
-		printf("| %02d:%02d:%02d |    %c | R$%.2f |\n\n", dados[i].hora, dados[i].minuto, dados[i].segundo, dados[i].tipo, dados[i].valor);
+		printf("| %02d:%02d:%02d |    %c | R$%8.2f |\n", dados[i].hora, dados[i].minuto, dados[i].segundo, dados[i].tipo, dados[i].valor);
 	}
 	printf("----------------------------------------------------------\n");
 }
