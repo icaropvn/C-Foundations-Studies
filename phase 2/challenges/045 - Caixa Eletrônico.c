@@ -102,7 +102,7 @@ void menu(float saldo, int notas[], int quant_notas, dadosExtrato dados[], int d
 	
 	while(answer != 'E' && answer != 'e')
 	{
-		printf("Bem-Vindo(a)!\nO que deseja fazer hoje?\n");
+		printf("Bem-Vindo(a) [NOME DE USUÁRIO]!\nO que deseja fazer hoje?\n");
 		printf("[A] Sacar\n[B] Depositar\n[C] Verificar Saldo\n[D] Extrato\n[E] Sair\nR: ");
 		scanf(" %c", &answer);
 		
