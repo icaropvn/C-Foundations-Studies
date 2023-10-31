@@ -16,11 +16,13 @@ int main()
 	srand(time(NULL));
 	
 	sortearVetor(vetor);
+	printf("Vetor Original = ");
 	imprimirVetor(vetor);
 	
 	printf("\n\n");
 	
 	ordenarVetor(vetor);
+	printf("Vetor Ordenado por Selection Sort = ");
 	imprimirVetor(vetor);
 	
 	printf("\n");
@@ -34,7 +36,7 @@ void sortearVetor(int vetor[])
 	
 	for(i=0; i<TAM; i++)
 	{
-		vetor[i] = (rand() % 10) + 1;
+		vetor[i] = (rand() % 30) + 1;
 	}
 }
 
@@ -72,7 +74,7 @@ void ordenarVetor(int vetor[])
 				index_menor = j;
 		}
 		
-		// Substituir Valor
+		// Substituir valor caso o valor atual seja maior que o encontrado anteriormente
 		if(vetor[i] > vetor[index_menor])
 		{
 			aux = vetor[i];
