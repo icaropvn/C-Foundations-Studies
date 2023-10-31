@@ -1,4 +1,4 @@
-// Algoritmo de Ordenação de Vetores (Bubble Sort)
+// Algoritmos de Ordenação - Bubble Sort
 
 #include <stdio.h>
 #include <stdlib.h>
