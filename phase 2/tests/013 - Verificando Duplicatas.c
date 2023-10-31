@@ -1,30 +1,31 @@
 /*
 - Implementar print dos números na ordem que eles aparecem no vetor original
 
-- Implementar print formatado: "Número X duplicado X vez(es), na(s) posição(ões) X1, X2 e X3"
+- Implementar print da posição original do número, além de suas duplicatas.
 */
 
 #include <stdio.h>
 #include <stdlib.h>
 #include <locale.h>
 #include <time.h>
-#define TAM 10
+#define TAM 15
 
 void preencher(int vetor[], int vet_aux[]);
 void imprimir(int vetor[]);
 void ordenar(int vetor[]);
-void verificar(int vetor[]);
+void verificar(int vetor[], int vet_og[]);
+void verificarPosicao(int vet_og[], int valor, int cont);
 
 int main()
 {
 	int answer;
 	int vetor[TAM];
-	int vet_aux[TAM];
+	int vet_og[TAM];
 	
 	setlocale(LC_ALL, "Portuguese");
 	srand(time(NULL));
 	
-	preencher(vetor, vet_aux);
+	preencher(vetor, vet_og);
 	
 	printf("Vetor Sorteado = ");
 	imprimir(vetor);
@@ -38,21 +39,21 @@ int main()
 	
 	printf("\n");
 	
-	verificar(vetor);
+	verificar(vetor, vet_og);
 	
 	printf("\n");
 	
 	return 0;
 }
 
-void preencher(int vetor[], int vet_aux[])
+void preencher(int vetor[], int vet_og[])
 {
 	int i;
 	
 	for(i=0; i<TAM; i++)
 	{
 		vetor[i] = (rand() % 10) + 1 ;
-		vet_aux[i] = vetor[i];
+		vet_og[i] = vetor[i];
 	}
 }
 
@@ -90,10 +91,9 @@ void ordenar(int vetor[])
 	}
 }
 
-void verificar(int vetor[])
+void verificar(int vetor[], int vet_og[])
 {
 	int i = 0, j;
-	int posicao;
 	int cont = 0;
 	
 	while(i < TAM)
@@ -106,7 +106,6 @@ void verificar(int vetor[])
 			{
 				cont++;
 				i++;
-				posicao = i;
 			}
 			else
 				break;
@@ -115,12 +114,43 @@ void verificar(int vetor[])
 		if(cont != 0)
 		{
 			if(cont == 1)
-				printf("\nNúmero %i duplicado %i vez!", vetor[i], cont, posicao);
+			{
+				printf("\nNúmero %i duplicado %i vez, na posição: ", vetor[i], cont);
+				verificarPosicao(vet_og, vetor[i], cont);
+			}
+				
 			else if(cont > 1)
-				printf("\nNúmero %i duplicado %i vezes!", vetor[i], cont);
+			{
+				printf("\nNúmero %i duplicado %i vezes, nas posições: ", vetor[i], cont);
+				verificarPosicao(vet_og, vetor[i], cont);
+			}
 		}
 		
 		i++;	
 		cont = 0;
 	}	
+}
+
+void verificarPosicao(int vet_og[], int valor, int cont)
+{
+	int i;
+	int temp = -1;
+	
+	for(i=0; i<TAM; i++)
+	{
+		if(vet_og[i] == valor)
+		{
+			temp++;
+			
+			if(temp > 0)
+			{
+				if(temp == cont)
+					printf("%i.", i);
+				else if(temp == cont-1)
+					printf("%i e ", i);
+				else
+					printf("%i, ", i);
+			}
+		}
+	}
 }
