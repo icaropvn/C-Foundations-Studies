@@ -1,5 +1,5 @@
 /*
-- Implementar print da posição original do número, além de suas duplicatas.
+
 */
 
 #include <stdio.h>
@@ -101,7 +101,7 @@ void verificarDuplicatas(int vetor[], int vet_og[])
 	int cont_og = 0, cont_duplicatas = 0;
 	int value, first_position;
 	int vet_blacklist[TAM], blacklist_flag;
-	int duplicata_flag;
+	int duplicata_flag = 0;
 	
 	preencherVetBL(vet_blacklist);
 	
@@ -130,17 +130,26 @@ void verificarDuplicatas(int vetor[], int vet_og[])
 			
 			if(cont_duplicatas == 1)
 			{
+				duplicata_flag = 1;
 				printf("\n=== Número %i ===\nAparece primeiro na posição: %i\n%i duplicata na posição: ", value, first_position, cont_duplicatas);
 				obterPosicoes(vet_og, value, cont_duplicatas);
 				printf("\n");
 			}
 			else if(cont_duplicatas > 1)
 			{
+				duplicata_flag = 1;
 				printf("\n=== Número %i ===\nAparece primeiro na posição: %i\n%i duplicatas nas posições: ", value, first_position, cont_duplicatas);
 				obterPosicoes(vet_og, value, cont_duplicatas);
 				printf("\n");
 			}
 		}
+	}
+	
+	if(duplicata_flag == 0)
+	{
+		printf("\n=======================================\n");
+		printf("Não existe valores duplicados no vetor.\n");
+		printf("=======================================\n");
 	}
 }
 
