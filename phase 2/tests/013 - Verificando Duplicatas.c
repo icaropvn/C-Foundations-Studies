@@ -1,4 +1,13 @@
 /*
+Algoritmo para encontrar valores duplicados num vetor:
+
+1) O vetor é sorteado.
+
+2) Ocorre a verificação de duplicatas, imprimindo as seguintes informações:
+
+	=== Número X ===
+	Aparece primeiro em: [posição da primeira ocorrência]
+	[número de duplicatas] duplicatas, na(s) posição(ões): A, B, C e D
 
 */
 
