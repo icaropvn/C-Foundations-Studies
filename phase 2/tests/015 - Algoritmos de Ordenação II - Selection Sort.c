@@ -68,7 +68,7 @@ void ordenarVetor(int vetor[])
 		
 		index_menor = i;
 		
-		for(j=i; j<TAM; j++)
+		for(j=i+1; j<TAM; j++)
 		{
 			if(vetor[j] < vetor[index_menor])
 				index_menor = j;
