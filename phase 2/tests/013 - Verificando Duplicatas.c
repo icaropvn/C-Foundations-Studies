@@ -1,6 +1,4 @@
 /*
-- Implementar print dos números na ordem que eles aparecem no vetor original
-
 - Implementar print da posição original do número, além de suas duplicatas.
 */
 
@@ -10,11 +8,17 @@
 #include <time.h>
 #define TAM 15
 
-void preencher(int vetor[], int vet_aux[]);
-void imprimir(int vetor[]);
-void ordenar(int vetor[]);
-void verificar(int vetor[], int vet_og[]);
-void verificarPosicao(int vet_og[], int valor, int cont);
+void preencherVetor(int vetor[], int vet_aux[]);
+void imprimirVetor(int vetor[]);
+void ordenarVetor(int vetor[]);
+
+void verificarDuplicatas(int vetor[], int vet_og[]);
+
+void preencherVetBL(int vet_bl[]);
+int verificarValorBlacklist(int valor, int vet_bl[]);
+void adicionarNumBlacklist(int num, int vet_bl[]);
+
+void obterPosicoes(int vet_og[], int valor, int cont);
 
 int main()
 {
@@ -25,12 +29,12 @@ int main()
 	setlocale(LC_ALL, "Portuguese");
 	srand(time(NULL));
 	
-	preencher(vetor, vet_og);
+	preencherVetor(vetor, vet_og);
 	
 	printf("Vetor Sorteado = ");
-	imprimir(vetor);
+	imprimirVetor(vetor);
 	
-	ordenar(vetor);
+	ordenarVetor(vetor);
 	
 	/*
 	printf("\nVetor Ordenado = ");
@@ -39,14 +43,14 @@ int main()
 	
 	printf("\n");
 	
-	verificar(vetor, vet_og);
+	verificarDuplicatas(vetor, vet_og);
 	
 	printf("\n");
 	
 	return 0;
 }
 
-void preencher(int vetor[], int vet_og[])
+void preencherVetor(int vetor[], int vet_og[])
 {
 	int i;
 	
@@ -57,7 +61,7 @@ void preencher(int vetor[], int vet_og[])
 	}
 }
 
-void imprimir(int vetor[])
+void imprimirVetor(int vetor[])
 {
 	int i;
 	
@@ -72,7 +76,7 @@ void imprimir(int vetor[])
 	}
 }
 
-void ordenar(int vetor[])
+void ordenarVetor(int vetor[])
 {
 	int i, j;
 	int aux;
@@ -91,47 +95,96 @@ void ordenar(int vetor[])
 	}
 }
 
-void verificar(int vetor[], int vet_og[])
+void verificarDuplicatas(int vetor[], int vet_og[])
 {
-	int i = 0, j;
-	int cont = 0;
+	int i;
+	int cont_og = 0, cont_duplicatas = 0;
+	int value, first_position;
+	int vet_blacklist[TAM], blacklist_flag;
+	int duplicata_flag;
 	
-	while(i < TAM)
+	preencherVetBL(vet_blacklist);
+	
+	for(cont_og=0; cont_og<TAM; cont_og++)
 	{
-		while(1)
+		value = vet_og[cont_og];
+		cont_duplicatas = 0;
+		
+		blacklist_flag = verificarValorBlacklist(value, vet_blacklist);
+		
+		if(blacklist_flag == 0)
 		{
-			j = i + 1;
+			adicionarNumBlacklist(value, vet_blacklist);
 			
-			if(vetor[i] == vetor[j])
+			first_position = cont_og;
+			
+			for(i=0; i<TAM; i++)
 			{
-				cont++;
-				i++;
+				if(vetor[i] == value)
+				{
+					cont_duplicatas++;
+				}	
 			}
-			else
-				break;
+			
+			cont_duplicatas--;
+			
+			if(cont_duplicatas == 1)
+			{
+				printf("\n=== Número %i ===\nAparece primeiro na posição: %i\n%i duplicata na posição: ", value, first_position, cont_duplicatas);
+				obterPosicoes(vet_og, value, cont_duplicatas);
+				printf("\n");
+			}
+			else if(cont_duplicatas > 1)
+			{
+				printf("\n=== Número %i ===\nAparece primeiro na posição: %i\n%i duplicatas nas posições: ", value, first_position, cont_duplicatas);
+				obterPosicoes(vet_og, value, cont_duplicatas);
+				printf("\n");
+			}
 		}
-		
-		if(cont != 0)
-		{
-			if(cont == 1)
-			{
-				printf("\nNúmero %i duplicado %i vez, na posição: ", vetor[i], cont);
-				verificarPosicao(vet_og, vetor[i], cont);
-			}
-				
-			else if(cont > 1)
-			{
-				printf("\nNúmero %i duplicado %i vezes, nas posições: ", vetor[i], cont);
-				verificarPosicao(vet_og, vetor[i], cont);
-			}
-		}
-		
-		i++;	
-		cont = 0;
-	}	
+	}
 }
 
-void verificarPosicao(int vet_og[], int valor, int cont)
+void preencherVetBL(int vet_bl[])
+{
+	int i;
+	
+	for(i=0; i<TAM; i++)
+	{
+		vet_bl[i] = -1;
+	}
+}
+
+void adicionarNumBlacklist(int num, int vet_bl[])
+{
+	int i = 0;
+	int contador = 0;
+	
+	while(1)
+	{
+		if(vet_bl[i] == -1)
+		{
+			vet_bl[i] = num;
+			break;
+		}
+		else
+			i++;
+	}
+}
+
+int verificarValorBlacklist(int valor, int vet_bl[])
+{
+	int i;
+	
+	for(i=0; i<TAM; i++)
+	{
+		if(valor == vet_bl[i])
+			return 1;
+	}
+	
+	return 0;
+}
+
+void obterPosicoes(int vet_og[], int valor, int cont)
 {
 	int i;
 	int temp = -1;
