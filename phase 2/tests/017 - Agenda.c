@@ -12,23 +12,43 @@ typedef struct
 	char descricao[50];
 } compromisso;
 
+void preencherAgenda(compromisso agenda[5][7]);
 void registrarNome(char nome[]);
-void menu(char nome[]);
-void marcarCompromisso(compromisso compromissos[5][7]);
-int marcarDataCompromisso(compromisso compromissos[5][7], int *index_dia, int *index_semana);
-int procurarDiaNaAgenda(int dia, compromisso compromissos[5][7], int *index_dia, int *index_semana);
+void menu(char nome[], compromisso agenda[5][7]);
+void marcarCompromisso(compromisso agenda[5][7]);
+//int marcarDataCompromisso();
+//int procurarDiaNaAgenda();
+//void marcarHoraCompromisso();
 
 int main()
 {
 	char nome[50];
+	compromisso agenda[5][7];
 	
 	setlocale(LC_ALL, "Portuguese");
 	
+	preencherAgenda(agenda);
+	
 	registrarNome(nome);
 	
-	menu(nome);
+	menu(nome, agenda);
 	
 	return 0;
+}
+
+void preencherAgenda(compromisso agenda[5][7])
+{
+	int i, j;
+	int contador = 1;
+	
+	for(i=0; i<5; i++)
+	{
+		for(j=0; j<7; j++)
+		{
+			agenda[i][j].dia = contador;
+			contador++;
+		}
+	}
 }
 
 void registrarNome(char nome[])
@@ -39,43 +59,43 @@ void registrarNome(char nome[])
 	fflush(stdin);
 }
 
-void menu(char nome[])
+void menu(char nome[], compromisso agenda[5][7])
 {
 	int answer;
-	compromisso compromissos[5][7];
 	
 	while(answer != 2)
 	{
 		printf("\nBem-vindo à sua agenda Novembro/23, %s!", nome);
-		printf("[1] Marcar Compromisso\n[2] Sair\nR: ");
+		printf("\n[1] Marcar Compromisso\n\n[2] Ver Agenda\n[3] Sair\nR: ");
 		scanf("%i", &answer);
 		
 		switch(answer)
 		{
 			case 1:
-				marcarCompromisso(compromissos);
+				imprimirAgenda();
+				marcarCompromisso(agenda);
 				break;
 			case 2:
+				imprimirAgenda();
+				imprimirCompromissos();
+				break;
+			case 3:
 				break;
 			default:
 				printf("Opção Inválida.");
+				break;
 		}
 	}
 }
 
-void marcarCompromisso(compromisso compromissos[5][7])
-{
-	int index_dia;
-	int index_semana;	
-	
-	marcarDataCompromisso(compromissos, &index_dia, &index_semana);
+void marcarCompromisso(compromisso agenda[5][7])
+{	
+	marcarDataCompromisso();
 	marcarHoraCompromisso();
-	
-	printf("Descrição do compromisso: ");
-	scanf("%[^\n]", &compromissos[index_semana][index_dia].descricao);
+	marcarDescricaoCompromisso();
 }
 
-int marcarDataCompromisso(compromisso compromissos[5][7], int *index_dia, int *index_semana)
+int marcarDataCompromisso()
 {
 	int dia;
 	
@@ -84,27 +104,35 @@ int marcarDataCompromisso(compromisso compromissos[5][7], int *index_dia, int *i
 		printf("Dia do compromisso: ");
 		scanf("%i", &dia);
 		
-		if(0 < dia < 31)
-			procurarDiaNaAgenda(dia, compromissos, &*index_dia, &*index_semana);
+		if(0 < dia && dia < 31)
+			break;
 		else
 			printf("Dia inválido.");
 	}
+	
+	procurarDiaNaAgenda();
 }
 
-int procurarDiaNaAgenda(int dia, compromisso compromissos[5][7], int *index_dia, int *index_semana)
+int procurarDiaNaAgenda()
 {
 	int i, j;
-	int contador = 1;
 	
 	for(i=0; i<5; i++)
 	{
 		for(j=0; j<7; j++)
 		{
-			if(contador == dia)
+			if(dia == agenda[i][j].dia)
 			{
-				*index_dia = j;
-				*index_semana = i;
+				agenda[i][j] = 0;
 			}
 		}
 	}
+}
+
+void marcarHoraCompromisso()
+{
+	printf("Insira a hora do compromisso: ");
+	scanf("%i", &compromissos[index_semana][index_dia].hora);
+	printf("h");
+	scanf("%i", &compromissos[index_semana][index_dia].minutos);
 }
