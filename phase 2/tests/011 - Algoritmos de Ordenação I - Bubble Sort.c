@@ -60,15 +60,15 @@ void ordenar_vetor(int vetor[])
 	int i, j;
 	int aux;
 	
-	for(i=0; i<10; i++)
+	for(j=0; j<10; j++)
 	{
-		for(j=i+1; j<10; j++)
-		{
-			if(vetor[j] < vetor[i])
+		for(i=0; i<9; i++)
+		{	
+			if(vetor[i] > vetor[i+1])
 			{
 				aux = vetor[i];
-				vetor[i] = vetor[j];
-				vetor[j] = aux;
+				vetor[i] = vetor[i+1];
+				vetor[i+1] = aux;
 			}
 		}
 	}
