@@ -43,4 +43,4 @@ float exponenciar(float num1, float num2)
 	}
 }
 
-#endif
+#endif // FUNCOESMAT_H
