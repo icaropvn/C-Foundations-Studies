@@ -101,14 +101,17 @@ int ler_palpite()
 int buscar_palpite(int palpite, int vetor[])
 {
 	// variáveis para usar a busca binária por 'for'
+	/*
 	int i;
 	int loops = log2(TAM);
+	*/
 	
 	int inicio = 0;
 	int fim = TAM - 1;
 	int meio;
 	
 	// busca binária usando 'for'
+	/*
 	for(i=0; i<=loops; i++)
 	{
 		meio = (fim + inicio) / 2;
@@ -120,9 +123,9 @@ int buscar_palpite(int palpite, int vetor[])
 		else
 			fim = meio - 1;
 	}
+	*/
 	
 	// busca binária usando 'while'
-	/*
 	while(inicio <= fim)
 	{
 		meio = (fim + inicio) / 2;
@@ -134,7 +137,6 @@ int buscar_palpite(int palpite, int vetor[])
 		else
 			fim = meio - 1;
 	}
-	*/
 	
 	return 0;
 }
