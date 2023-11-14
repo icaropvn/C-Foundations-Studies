@@ -198,7 +198,7 @@ int escolherTipoAgenda(mes meses[])
 	int answer;
 	int mes;
 	
-	printf("Escolha uma opção:\n[1] Mostrar Mês Único\n[2] Mostrar Ano\nR: ");
+	printf("\nEscolha uma opção:\n[1] Mostrar Mês Único\n[2] Mostrar Ano\nR: ");
 	scanf("%i", &answer);
 	
 	switch(answer)
@@ -393,7 +393,7 @@ void imprimirCompromissosAno(mes meses[])
 	
 	for(i=0; i<12; i++)
 	{
-		for(j=0; j<5; i++)
+		for(j=0; j<5; j++)
 		{
 			for(k=0; k<7; k++)
 			{
