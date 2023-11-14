@@ -34,16 +34,18 @@ void registrarNome(char nome[]);
 
 void menu(char nome[], mes meses[], int meses_31[], int meses_30[]);
 int escolherMes();
-void escolherTipoAgenda(mes meses[]);
+int escolherTipoAgenda(mes meses[]);
 
-void marcarCompromisso(int mes_escolhido, mes meses[]);
-int marcarDataCompromisso(mes meses[]);
-int procurarDiaNaAgenda(int dia, agenda agenda[5][7]);
-void marcarHoraCompromisso(agenda agenda[5][7], int ind_semana, int ind_dia);
+void marcarCompromisso(int mes_escolhido, mes meses[], int meses_31[], int meses_30[]);
+int marcarDataCompromisso(int mes_escolhido, mes meses[], int meses_31[], int meses_30[]);
+int procurarDiaNaAgenda(int dia, int mes_escolhido, mes meses[]);
+void marcarHoraCompromisso(mes meses[], int mes_escolhido, int ind_semana, int ind_dia);
 
 void imprimirMesUnico(int mes_escolhio, mes meses[]);
+void imprimirAno(mes meses[]);
 void marcarDescricaoCompromisso();
-void imprimirCompromissos(agenda agenda[5][7]);
+void imprimirCompromissosMesUnico(mes meses[], int mes_escolhido);
+void imprimirCompromissosAno(mes meses[]);
 
 int main()
 {
@@ -58,7 +60,7 @@ int main()
 	
 	registrarNome(nome);
 	
-	menu(nome, meses);
+	menu(nome, meses, meses_31, meses_30);
 	
 	return 0;
 }
@@ -67,9 +69,13 @@ void preencherMeses(mes meses[], int meses_31[], int meses_30[])
 {
 	int i, j, k;
 	int contador_dia = 1;
+	int mes_overflow_flag = 0;
 	
 	for(i=0; i<12; i++)
 	{
+		mes_overflow_flag = 0;
+		contador_dia = 1;
+		
 		for(j=0; j<5; j++)
 		{
 			for(k=0; k<7; k++)
@@ -79,21 +85,33 @@ void preencherMeses(mes meses[], int meses_31[], int meses_30[])
 				
 				meses[i].agenda[j][k].dia = contador_dia;
 				
-				if(verificarMes(i, meses_31, meses_30) == 0)
+				if(verificarMes(i+1, meses_31, meses_30) == 0)
 				{
 					if(contador_dia == 31)
+					{
+						mes_overflow_flag = 1;
 						contador_dia = 0;
+					}
 				}
-				else if(verificarMes(i, meses_31, meses_30) == 1)
+				else if(verificarMes(i+1, meses_31, meses_30) == 1)
 				{
 					if(contador_dia == 30)
+					{
+						mes_overflow_flag = 1;
 						contador_dia = 0;
+					}
 				}
 				else
 				{
 					if(contador_dia == 29)
+					{
+						mes_overflow_flag = 1;
 						contador_dia = 0;
+					}
 				}
+				
+				if(mes_overflow_flag == 0)
+					contador_dia++;
 			}
 		}
 	}
@@ -108,7 +126,7 @@ int verificarMes(int mes, int meses_31[], int meses_30[])
 		
 	for(i=0; i<4; i++)
 	{
-		if(meses_31[i] == mes)
+		if(meses_30[i] == mes)
 			return 1;
 	}
 	
@@ -127,6 +145,7 @@ void menu(char nome[], mes meses[], int meses_31[], int meses_30[])
 {
 	int answer;
 	int mes;
+	int agenda_escolhida;
 	
 	while(answer != 3)
 	{
@@ -144,8 +163,6 @@ void menu(char nome[], mes meses[], int meses_31[], int meses_30[])
 				break;
 			case 2:
 				escolherTipoAgenda(meses);
-				////////////////////////////////////// ULTIMA ALTERACAO
-				imprimirCompromissos(agenda);
 				break;
 			case 3:
 				printf("\nAté a próxima, %s!", nome);
@@ -176,7 +193,7 @@ int escolherMes()
 }
 
 // usuario vai escolher se quer ver um mes unico ou todos os meses do ano
-void escolherTipoAgenda(mes meses[])
+int escolherTipoAgenda(mes meses[])
 {
 	int answer;
 	int mes;
@@ -189,14 +206,16 @@ void escolherTipoAgenda(mes meses[])
 		case 1:
 			mes = escolherMes();
 			imprimirMesUnico(mes, meses);
+			imprimirCompromissosMesUnico(meses, mes);
 			break;
 		case 2:
-			imprimirAno();
+			imprimirAno(meses);
+			imprimirCompromissosAno(meses);
 			break;
 	}
 }
 
-void imprimirMesUnico(int mes_escolhio, mes meses[])
+void imprimirMesUnico(int mes_escolhido, mes meses[])
 {
 	int i, j;
 	
@@ -210,13 +229,13 @@ void imprimirMesUnico(int mes_escolhio, mes meses[])
 				printf("|");
 			
 			if(meses[mes_escolhido-1].agenda[i][j].dia == 0)
-				printf("  -- |");
+				printf("   -- |");
 			else
 			{
 				if(meses[mes_escolhido-1].agenda[i][j].contador_compromisso == 0)
-					printf("   %02i |", agenda[i][j].dia);
+					printf("   %02i |", meses[mes_escolhido-1].agenda[i][j].dia);
 				else
-					printf(" X %02i |", agenda[i][j].dia);	
+					printf(" X %02i |", meses[mes_escolhido-1].agenda[i][j].dia);	
 			}
 		}
 		
@@ -224,7 +243,7 @@ void imprimirMesUnico(int mes_escolhio, mes meses[])
 	}
 }
 
-void imprimirAno()
+void imprimirAno(mes meses[])
 {
 	int i, j, k;
 	
@@ -240,13 +259,13 @@ void imprimirAno()
 					printf("|");
 				
 				if(meses[i].agenda[j][k].dia == 0)
-					printf("  -- |");
+					printf("   -- |");
 				else
 				{
 					if(meses[i].agenda[j][k].contador_compromisso == 0)
-						printf("   %02i |", agenda[i][j].dia);
+						printf("   %02i |", meses[i].agenda[j][k].dia);
 					else
-						printf(" X %02i |", agenda[i][j].dia);	
+						printf(" X %02i |", meses[i].agenda[j][k].dia);	
 				}
 			}
 			
@@ -259,7 +278,7 @@ void marcarCompromisso(int mes_escolhido, mes meses[], int meses_31[], int meses
 {	
 	int dia;
 	
-	dia = marcarDataCompromisso(mes, meses, meses_31, meses_30);
+	dia = marcarDataCompromisso(mes_escolhido, meses, meses_31, meses_30);
 	
 	procurarDiaNaAgenda(dia, mes_escolhido, meses);
 }
@@ -293,7 +312,7 @@ int marcarDataCompromisso(int mes_escolhido, mes meses[], int meses_31[], int me
 	}
 }
 
-int procurarDiaNaAgenda(int dia, mes meses[])
+int procurarDiaNaAgenda(int dia, int mes_escolhido, mes meses[])
 {
 	int i, j;
 	
@@ -337,7 +356,7 @@ void marcarDescricaoCompromisso(mes meses[], int mes_escolhido, int ind_semana, 
 	fflush(stdin);
 }
 
-void imprimirCompromissos(agenda agenda[5][7])
+void imprimirCompromissosMesUnico(mes meses[], int mes_escolhido)
 {
 	int i, j, k;
 	int existe_compromisso = 0;
@@ -346,16 +365,49 @@ void imprimirCompromissos(agenda agenda[5][7])
 	{
 		for(j=0; j<7; j++)
 		{
-			if(agenda[i][j].contador_compromisso > 0)
+			if(meses[mes_escolhido-1].agenda[i][j].contador_compromisso > 0)
 			{
 				existe_compromisso = 1;
 				
-				printf("\n====== Dia %02i/11 ======\n", agenda[i][j].dia);
+				printf("\n====== Dia %02i/%02i ======\n", meses[mes_escolhido-1].agenda[i][j].dia, mes_escolhido-1);
 				
-				for(k=0; k<agenda[i][j].contador_compromisso; k++)
+				for(k=0; k<meses[mes_escolhido-1].agenda[i][j].contador_compromisso; k++)
 				{
-					printf("\nCompromisso: %s\n", agenda[i][j].compromissos[k].descricao);
-					printf("Hora: %02ih%02i\n", agenda[i][j].compromissos[k].hora, agenda[i][j].compromissos[k].minutos);
+					printf("\nCompromisso: %s\n", meses[mes_escolhido-1].agenda[i][j].compromissos[k].descricao);
+					printf("Hora: %02ih%02i\n", meses[mes_escolhido-1].agenda[i][j].compromissos[k].hora, meses[mes_escolhido-1].agenda[i][j].compromissos[k].minutos);
+				}
+			}
+		}
+	}
+	
+	if(!existe_compromisso)
+		printf("\nVocê não possui compromissos marcados.\n");
+	
+	printf("\n===========================================");
+}
+
+void imprimirCompromissosAno(mes meses[])
+{
+	int i, j, k, l;
+	int existe_compromisso = 0;
+	
+	for(i=0; i<12; i++)
+	{
+		for(j=0; j<5; i++)
+		{
+			for(k=0; k<7; k++)
+			{
+				if(meses[i].agenda[j][k].contador_compromisso > 0)
+				{
+					existe_compromisso = 1;
+					
+					printf("\n====== Dia %02i/%02i ======\n", meses[i].agenda[j][k].dia, i+1);
+					
+					for(l=0; l<meses[i].agenda[j][k].contador_compromisso; l++)
+					{
+						printf("\nCompromisso: %s\n", meses[i].agenda[j][k].compromissos[l].descricao);
+						printf("Hora: %02ih%02i\n", meses[i].agenda[j][k].compromissos[l].hora, meses[i].agenda[j][k].compromissos[l].minutos);
+					}
 				}
 			}
 		}
