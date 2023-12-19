@@ -1,9 +1,5 @@
 /* Algoritmo que simula o funcionamento de uma agenda */
 
-// implementar: leitura direta das horas
-// adicionar: dar a opção do usuario escolher um mês (vetor de matrizes)
-// adicionar: imprimir calendário certo a partir do mês, com dias da semana relacionados
-
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
