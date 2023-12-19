@@ -180,7 +180,7 @@ int escolherMes()
 	
 	while(mes < 1 || mes > 12)
 	{
-		printf("Qual mês você gostaria de marcar o compromisso? (1 - 12)\nR: ");
+		printf("\nQual mês você gostaria de marcar o compromisso? (1 - 12)\nR: ");
 		scanf("%i", &mes);
 		
 		if(mes < 1 || mes > 12)
@@ -369,7 +369,7 @@ void imprimirCompromissosMesUnico(mes meses[], int mes_escolhido)
 			{
 				existe_compromisso = 1;
 				
-				printf("\n====== Dia %02i/%02i ======\n", meses[mes_escolhido-1].agenda[i][j].dia, mes_escolhido-1);
+				printf("\n====== Dia %02i/%02i ======\n", meses[mes_escolhido-1].agenda[i][j].dia, mes_escolhido);
 				
 				for(k=0; k<meses[mes_escolhido-1].agenda[i][j].contador_compromisso; k++)
 				{

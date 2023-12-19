@@ -60,7 +60,7 @@ void ordenar_vetor(int vetor[])
 	int i, j;
 	int aux;
 	
-	for(j=0; j<10; j++)
+	for(j=0; j<9; j++)
 	{
 		for(i=0; i<9; i++)
 		{	
