@@ -96,7 +96,7 @@ void registerNewStudent(studentData students[], int *counter)
     writeRegistersDocument(students, *counter);
 }
 
-// 
+// função que lê e atribui ao vetor os dados do arquivo txt
 void pullDataDocument(studentData students[], int *counter)
 {
     FILE *file;
@@ -113,6 +113,7 @@ void pullDataDocument(studentData students[], int *counter)
     fclose(file);
 }
 
+// função que coleta os dados do novo registro do usuário e atribui ao final do vetor
 void getDataNewRegister(studentData students[], int *counter)
 {
     printf("\nInsira o código do aluno: ");
@@ -134,6 +135,7 @@ void getDataNewRegister(studentData students[], int *counter)
     (*counter)++;
 }
 
+// função que ordena o vetor de dados em ordem crescente de código
 void sortStudents(studentData students[], int counter)
 {
 	int i, j;
@@ -153,6 +155,7 @@ void sortStudents(studentData students[], int counter)
 	}
 }
 
+// função que retorna o vetor já ordenado e implementado com novo registro ao arquivo txt
 void writeRegistersDocument(studentData students[], int counter)
 {
     FILE *file;
@@ -168,6 +171,7 @@ void writeRegistersDocument(studentData students[], int counter)
     fclose(file);
 }
 
+// função que mostra em forma de tabela todos os dados encontrados no arquivo txt
 void showRegisters(studentData students[])
 {
     int code;
@@ -191,6 +195,7 @@ void showRegisters(studentData students[])
     }
 }
 
+// função geral que verifica o retorno da tentativa de abrir o arquivo, se for NULL, mensagem apropriada é escrita
 int verifyErrorFile(FILE *file)
 {
     if(file == NULL)
