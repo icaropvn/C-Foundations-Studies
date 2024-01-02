@@ -1,15 +1,20 @@
 /*
-IMPLEMENTAÇÕES A SEREM FEITAS
+Sistema de cadastramento de alunos na UNAERP
 
-1. criar uma variavel na struct dos emails pra guardar a quantidade de emails registrados por pessoa
+1. Alunos podem ser cadastrados através de código (RA), etapa (semestre), ano de início, mensalidade, bolsa e e-mails (máximo de 3)
 
-2. fazer verificação de no maximo 3 emails cadastrados
+2. É possível listar o cadastramentos efetuados no ciclo atual do programa.
 
-3. fazer funcao de redefinir dados escolhidos por RA
+3. É possível gerar um arquivo CSV contendo todas as informações de cadastro do ciclo atual.
 
-4. trocar W por A e fazer verificação de alunos iguais através de RA a cada envio de dados
+4. É possível sair do programa.
 
-5. ordenar RAs por ordem crescente no arquivo
+-- DESVANTAGENS --
+
+- Não é possível alterar as informações de cadastros já efetuados
+
+- Os cadastros não se mantêm após o fim de um ciclo, porque as informações são sobrescritas no arquivo CSV
+
 */
 
 #include <stdio.h>
@@ -28,6 +33,7 @@ typedef struct
 {
 	int codigo, etapa, ano_inicio;
 	float mensalidade, bolsa;
+	int quant_emails;
 	emails email[3];
 } dadosAlunos;
 
@@ -115,19 +121,35 @@ void cadastrarAluno(dadosAlunos alunos[], int *contador)
 
 void lerEmail(dadosAlunos alunos[], int contador)
 {
-	int quant_emails;
 	int i;
+	int verificacao = 0;
 	
-	printf("\nQuantos e-mails deseja cadastrar?\nR: ");
-	scanf("%i", &quant_emails);
+	while(verificacao == 0)
+	{
+		printf("\nQuantos e-mails deseja cadastrar?\nR: ");
+		scanf("%i", &alunos[contador].quant_emails);
+		
+		verificacao = verificarQuantEmails(contador, alunos[contador].quant_emails);
+	}
 	
-	for(i=0; i<quant_emails; i++)
+	for(i=0; i<alunos[contador].quant_emails; i++)
 	{
 		printf("\nInsira o e-mail %02i: ", i+1);
 		scanf(" %50[^\n]", alunos[contador].email[i].emails);
 	}
 	
 	printf("--------------------------------\n");
+}
+
+int verificarQuantEmails(int contador, int quant_emails_escolhida)
+{
+	if(quant_emails_escolhida > 3)
+	{
+		printf("\nQuantidade inválida. Você só pode cadastrar até 3 e-mails.\n");
+		return 0;
+	}
+	else
+		return 1;
 }
 
 void listarCadastros(dadosAlunos alunos[], int contador)
@@ -142,23 +164,24 @@ void listarCadastros(dadosAlunos alunos[], int contador)
 	}
 	else
 	{
-		printf("\n|---RA---|-ETAPA-|-ANO DE INICIO-|-MENSALIDADE-|--BOLSA--|-E-MAILS--------------------------------------------|\n");
+		printf("\n|---RA---|-ETAPA-|-ANO DE INICIO-|-MENSALIDADE-|---BOLSA---|-E-MAILS--------------------------------------------|\n");
 		
 		for(i=0; i<contador; i++)
 		{
-			printf("|-------------------------------------------------------------------------------------------------------------|\n");
+			if(contador > 1)
+				printf("|-------------------------------------------------------------------------------------------------------------|\n");
 			
-			printf("| %06i |    %02i |          %4i |    %08.2f |", alunos[i].codigo, alunos[i].etapa, alunos[i].ano_inicio, alunos[i].mensalidade);
+			printf("| %06i |    %02i |          %4i |  R$%8.2f |", alunos[i].codigo, alunos[i].etapa, alunos[i].ano_inicio, alunos[i].mensalidade);
 			
 			if(alunos[i].bolsa == 0)
-		        printf("       - ");
+		        printf("         - ");
 		    else
-		        printf(" %07.2f ", alunos[i].bolsa);
+		        printf(" R$%7.2f ", alunos[i].bolsa);
 			
 			imprimirEmails(alunos, i);
 		}
 		
-		printf("|-------------------------------------------------------------------------------------------------------------|\n\n");
+		printf("|---------------------------------------------------------------------------------------------------------------|\n\n");
 	}
 }
 
@@ -166,12 +189,12 @@ void imprimirEmails(dadosAlunos alunos[], int j)
 {
 	int i;
 	
-	for(i=0; i<3; i++)
+	for(i=0; i<alunos[j].quant_emails; i++)
 	{
 		if(i == 0)
 			printf("| %50s |\n", alunos[j].email[i].emails);
 		else
-			printf("|                                                        | %50s |\n", alunos[j].email[i].emails);
+			printf("|                                                          | %50s |\n", alunos[j].email[i].emails);
 	}
 		
 }
@@ -180,7 +203,7 @@ void gerarArquivo(dadosAlunos alunos[], int contador)
 {
 	FILE *file;
 	char nome_escolhido[50];
-	int i;
+	int i, j;
 	
 	printf("\n---------------------------------");
 	printf("\nEscolha o nome do arquivo CSV: ");
@@ -192,10 +215,18 @@ void gerarArquivo(dadosAlunos alunos[], int contador)
 	
 	for(i=0; i<contador; i++)
 	{
-		fprintf(file, "%06i; %02i; %4i; %07.2f; %07.2f; %s\n", alunos[contador].codigo, alunos[contador].etapa, alunos[contador].ano_inicio, alunos[contador].mensalidade, alunos[contador].bolsa, alunos[contador].email);
+		fprintf(file, "%06i; %02i; %4i; %08.2f; %07.2f;", alunos[i].codigo, alunos[i].etapa, alunos[i].ano_inicio, alunos[i].mensalidade, alunos[i].bolsa);
+		
+		for(j=0; j<alunos[i].quant_emails; j++)
+		{
+			if(j == alunos[i].quant_emails-1)
+				fprintf(file, "%s\n", alunos[i].email[j].emails);
+			else
+				fprintf(file, " %s;", alunos[i].email[j].emails);
+		}
 	}
 	
-	sleep(2);
+	sleep(1);
 	printf("\nArquivo gerado com sucesso!");
 	sleep(2);
 	

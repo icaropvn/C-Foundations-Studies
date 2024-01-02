@@ -1,20 +1,12 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <locale.h>
 #include <string.h>
 
-/*
-Foi atualizada a lógica de registrar um aluno.
+/* Este é um algoritmo de cadastro de alunos que simula um banco de dados
+através de um arquivo .txt. */
 
-No entanto, há problemas ao puxar os dados do documento. Por algum motivo ele só
-executa o 'while' uma vez, e depois encerra o software. --> isso ainda acontece??
-
-IMPLEMENTAÇÕES:
-
-1 - linha 144
-2 - linha 192
-
-*/
-
+// definição da struct que contém os dados de cada aluno
 typedef struct
 {
     int code;
@@ -22,19 +14,24 @@ typedef struct
     float parcial_grade, exam_grade, avarage;
 } studentData;
 
+void flushBuffer();
+
 void menu(studentData students[], int *counter);
     void selectOption(int answer, studentData students[], int *counter);
         void registerNewStudent(studentData students[], int *counter);
             void pullDataDocument(studentData students[], int *counter);
             void getDataNewRegister(studentData students[], int *counter);
-            void sortStudentsCode(studentData students[], int counter);
+            void sortStudents(studentData students[], int counter);
             void writeRegistersDocument(studentData students[], int counter);
         void showRegisters(studentData students[]);
 
 int verifyErrorFile(FILE *file);
 
+// função principal: declara o idioma da lib "locale.h" e declara os dados base. Invoca o Menu
 int main()
 {
+	setlocale(LC_ALL, "Portuguese");
+	
     studentData students[60];
     int counter = 0;
     
@@ -43,9 +40,17 @@ int main()
     return 0;
 }
 
+// função que limpa o buffer do teclado de maneira mais direta e segura em relação ao 'fflush(stdin)'
+void flushBuffer()
+{
+    int c;
+    while ((c = getchar()) != '\n' && c != EOF);
+}
+
+// função Menu que coleta a opção desejada do usuário e invoca a função que determina o caminho certo
 void menu(studentData students[], int *counter)
 {
-    int answer;
+    int answer = 0;
     
     while(answer != 3)
     {
@@ -57,6 +62,7 @@ void menu(studentData students[], int *counter)
     }
 }
 
+// função que determina a execução do algoritmo de acordo com a escolha do usuário
 void selectOption(int answer, studentData students[], int *counter)
 {
     switch(answer)
@@ -68,40 +74,39 @@ void selectOption(int answer, studentData students[], int *counter)
             showRegisters(students);
             break;
         case 3:
-            printf("\nAtÃ© mais!");
+            printf("\nAté mais!");
             break;
         default:
-            printf("\nOpÃ§Ã£o InvÃ¡lida.\n-----------------------------");
+            printf("\nOpção Inválida.\n-----------------------------");
             break;
     }
     
     printf("\n");
 }
 
+// função geral que define a ordem das funções para a execução da lógica do registro de um novo aluno
 void registerNewStudent(studentData students[], int *counter)
 {
     pullDataDocument(students, &*counter);
     
     getDataNewRegister(students, &*counter);
         
-    sortStudentsCode(students, *counter);
+    sortStudents(students, *counter);
         
     writeRegistersDocument(students, *counter);
 }
 
+// 
 void pullDataDocument(studentData students[], int *counter)
 {
-    int code;
-    char name[50];
-    float parcial_grade, exam_grade, avarage;
     FILE *file;
     
-    file = fopen("Cadastros.txt", "r");
+    file = fopen("022 - Lista de Cadastros.txt", "r");
     *counter = 0;
     
     if(!verifyErrorFile(file))
     {
-        while(fscanf(file, "%i%s%f%f%f", &students[*counter].code, students[*counter].name, &students[*counter].parcial_grade, &students[*counter].exam_grade, &students[*counter].avarage) != -1)
+        while(fscanf(file, "%i %s %f %f %f", &students[*counter].code, students[*counter].name, &students[*counter].parcial_grade, &students[*counter].exam_grade, &students[*counter].avarage) != EOF)
             (*counter)++;
     }
     
@@ -110,13 +115,13 @@ void pullDataDocument(studentData students[], int *counter)
 
 void getDataNewRegister(studentData students[], int *counter)
 {
-    printf("\nInsira o cÃ³digo do aluno: ");
+    printf("\nInsira o código do aluno: ");
     scanf("%6i", &students[*counter].code);
-    fflush(stdin);
+    flushBuffer();
         
     printf("Insira o nome do aluno: ");
     scanf(" %50[^\n]", students[*counter].name);
-    fflush(stdin);
+    flushBuffer();
         
     printf("Insira a nota parcial: ");
     scanf("%f", &students[*counter].parcial_grade);
@@ -129,39 +134,20 @@ void getDataNewRegister(studentData students[], int *counter)
     (*counter)++;
 }
 
-void sortStudentsCode(studentData students[], int counter)
+void sortStudents(studentData students[], int counter)
 {
 	int i, j;
-	int aux;
-	char str_aux[50];
+	studentData aux;
 	
 	for(i=0; i<counter; i++)
 	{
 		for(j=0; j<counter-1; j++)
 		{
 			if(students[j].code > students[j+1].code)
-			{
-			    // implementar uma funÃ§Ã£o de troca para cada um dos blocos abaixo
-			    
-				aux = students[j].code;
-				students[j].code = students[j+1].code;
-				students[j+1].code = aux;
-				
-				strcpy(str_aux, students[j].name);
-				strcpy(students[j].name, students[j+1].name);
-				strcpy(students[j+1].name, str_aux);
-				
-				aux = students[j].parcial_grade;
-				students[j].parcial_grade = students[j+1].parcial_grade;
-				students[j+1].parcial_grade = aux;
-				
-				aux = students[j].exam_grade;
-				students[j].exam_grade = students[j+1].exam_grade;
-				students[j+1].exam_grade = aux;
-				
-				aux = students[j].avarage;
-				students[j].avarage = students[j+1].avarage;
-				students[j+1].avarage = aux;
+			{		    
+				aux = students[j];
+				students[j] = students[j+1];
+				students[j+1] = aux;
 			}
 		}
 	}
@@ -170,12 +156,13 @@ void sortStudentsCode(studentData students[], int counter)
 void writeRegistersDocument(studentData students[], int counter)
 {
     FILE *file;
+    int i;
     
-    file = fopen("Cadastros.txt", "w");
+    file = fopen("022 - Lista de Cadastros.txt", "w");
     
-    for(int i=0; i<counter; i++)
+    for(i=0; i<counter; i++)
     {
-        fprintf(file, " %6i  %50s  %5.2f  %5.2f  %5.2f\n", students[i].code, students[i].name, students[i].parcial_grade, students[i].exam_grade, students[i].avarage);
+        fprintf(file, "%6i  %50s  %5.2f  %5.2f  %5.2f\n", students[i].code, students[i].name, students[i].parcial_grade, students[i].exam_grade, students[i].avarage);
     }
     
     fclose(file);
@@ -187,16 +174,13 @@ void showRegisters(studentData students[])
     char name[50];
     float parcial_grade, exam_grade, avarage;
     
-    FILE *file = fopen("Cadastros.txt", "r");
+    FILE *file = fopen("022 - Lista de Cadastros.txt", "r");
     
-    // implementaÃ§Ã£o da funÃ§Ã£o 'sortRegisters' para ordenar a lista de cadastros inteira em ordem crescente antes de mostrar
-    // para isso, ela puxarÃ¡ os registros do arquivo e colocarÃ¡-los no vetor, depois irÃ¡ ordenÃ¡-lo chamando a funÃ§Ã£o
-    
-    printf("\n|-- RA --|----------------------- NOME -----------------------|- PARCIAL -|- EXAME -|- MÃ‰DIA -|\n");
+    printf("\n|-- RA --|----------------------- NOME -----------------------|- PARCIAL -|- EXAME -|- MÉDIA -|\n");
     
     if(!verifyErrorFile(file))
     {
-        while(fscanf(file, "%i%s%f%f%f", &code, name, &parcial_grade, &exam_grade, &avarage) != -1 )
+        while(fscanf(file, "%i %s %f %f %f", &code, name, &parcial_grade, &exam_grade, &avarage) != EOF )
         {
             printf("| %6i | %50s | %9.2f | %7.2f | %7.2f |\n", code, name, parcial_grade, exam_grade, avarage);
         }
